@@ -1,0 +1,378 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Encode42 <me@encode42.dev>
+Date: Tue, 5 Jan 2021 22:21:56 -0500
+Subject: [PATCH] Add mobGriefing override to everything affected
+
+
+diff --git a/net/minecraft/world/entity/LivingEntity.java b/net/minecraft/world/entity/LivingEntity.java
+index 7165479d4445a7d370bdefe73ac23d5caeafabd9..5fb425f5064f2d9bf376ce209910a36808656417 100644
+--- a/net/minecraft/world/entity/LivingEntity.java
++++ b/net/minecraft/world/entity/LivingEntity.java
+@@ -1936,7 +1936,7 @@ public abstract class LivingEntity extends Entity implements Attackable, Waypoin
+         if (this.level() instanceof ServerLevel serverLevel) {
+             boolean var6 = false;
+             if (this.dead && entitySource instanceof WitherBoss) { // Paper
+-                if (serverLevel.getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING)) {
++                if (serverLevel.getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING, serverLevel.purpurConfig.witherMobGriefingOverride)) { // Purpur - Add mobGriefing override to everything affected
+                     BlockPos blockPos = this.blockPosition();
+                     BlockState blockState = Blocks.WITHER_ROSE.defaultBlockState();
+                     if (this.level().getBlockState(blockPos).isAir() && blockState.canSurvive(this.level(), blockPos)) {
+diff --git a/net/minecraft/world/entity/Mob.java b/net/minecraft/world/entity/Mob.java
+index f9a8cfd96f0bd8d080e8635d754db82fb7a5400f..cb09a8d2c0d8a561814c5e9dc91bbeaa28a58db0 100644
+--- a/net/minecraft/world/entity/Mob.java
++++ b/net/minecraft/world/entity/Mob.java
+@@ -539,7 +539,7 @@ public abstract class Mob extends LivingEntity implements EquipmentUser, Leashab
+             && this.canPickUpLoot()
+             && this.isAlive()
+             && !this.dead
+-            && serverLevel.getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING)) {
++            && serverLevel.getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING, serverLevel.purpurConfig.entitiesPickUpLootMobGriefingOverride)) { // Purpur - Add mobGriefing override to everything affected
+             Vec3i pickupReach = this.getPickupReach();
+ 
+             for (ItemEntity itemEntity : this.level()
+diff --git a/net/minecraft/world/entity/ai/behavior/HarvestFarmland.java b/net/minecraft/world/entity/ai/behavior/HarvestFarmland.java
+index f15e4cfd8c0ac5e08779dbe6b9aa40bfe9ce4d8f..ec03365dc786596521d280ea4d6948c651ee8deb 100644
+--- a/net/minecraft/world/entity/ai/behavior/HarvestFarmland.java
++++ b/net/minecraft/world/entity/ai/behavior/HarvestFarmland.java
+@@ -49,7 +49,7 @@ public class HarvestFarmland extends Behavior<Villager> {
+ 
+     @Override
+     protected boolean checkExtraStartConditions(ServerLevel level, Villager owner) {
+-        if (!level.getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING)) {
++        if (!level.getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING, level.purpurConfig.villagerMobGriefingOverride)) { // Purpur - Add mobGriefing override to everything affected
+             return false;
+         } else if (!owner.getVillagerData().profession().is(VillagerProfession.FARMER) && !(level.purpurConfig.villagerClericsFarmWarts && owner.getVillagerData().profession().is(VillagerProfession.CLERIC))) { // Purpur - Option for Villager Clerics to farm Nether Wart
+             return false;
+diff --git a/net/minecraft/world/entity/ai/goal/BreakDoorGoal.java b/net/minecraft/world/entity/ai/goal/BreakDoorGoal.java
+index e026e07ca86700c864a3dceda6817fb7b6cb11e9..cf380a13d6d54d1a9e8d10b31124942d59fca80c 100644
+--- a/net/minecraft/world/entity/ai/goal/BreakDoorGoal.java
++++ b/net/minecraft/world/entity/ai/goal/BreakDoorGoal.java
+@@ -30,7 +30,7 @@ public class BreakDoorGoal extends DoorInteractGoal {
+     @Override
+     public boolean canUse() {
+         return super.canUse()
+-            && getServerLevel(this.mob).getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING)
++            && getServerLevel(this.mob).getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING, this.mob.level().purpurConfig.zombieMobGriefingOverride) // Purpur - Add mobGriefing override to everything affected
+             && this.isValidDifficulty(this.mob.level().getDifficulty())
+             && !this.isOpen();
+     }
+diff --git a/net/minecraft/world/entity/ai/goal/EatBlockGoal.java b/net/minecraft/world/entity/ai/goal/EatBlockGoal.java
+index 0bff58498b146f937c3b128ca3454e5ff2551270..4cbfb5f635736df0822966b34cd73226840722b1 100644
+--- a/net/minecraft/world/entity/ai/goal/EatBlockGoal.java
++++ b/net/minecraft/world/entity/ai/goal/EatBlockGoal.java
+@@ -62,7 +62,7 @@ public class EatBlockGoal extends Goal {
+             BlockPos blockPos = this.mob.blockPosition();
+             final BlockState blockState = this.level.getBlockState(blockPos); // Paper - fix wrong block state
+             if (IS_EDIBLE.test(blockState)) { // Paper - fix wrong block state
+-                if (org.bukkit.craftbukkit.event.CraftEventFactory.callEntityChangeBlockEvent(this.mob, blockPos, blockState.getFluidState().createLegacyBlock(), !getServerLevel(this.level).getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING))) { // CraftBukkit // Paper - fix wrong block state
++                if (org.bukkit.craftbukkit.event.CraftEventFactory.callEntityChangeBlockEvent(this.mob, blockPos, blockState.getFluidState().createLegacyBlock(), !getServerLevel(this.level).getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING, getServerLevel(this.level).purpurConfig.sheepMobGriefingOverride))) { // CraftBukkit // Paper - fix wrong block state // Purpur - Add mobGriefing override to everything affected
+                     this.level.destroyBlock(blockPos, false);
+                 }
+ 
+@@ -70,7 +70,7 @@ public class EatBlockGoal extends Goal {
+             } else {
+                 BlockPos blockPos1 = blockPos.below();
+                 if (this.level.getBlockState(blockPos1).is(Blocks.GRASS_BLOCK)) {
+-                    if (org.bukkit.craftbukkit.event.CraftEventFactory.callEntityChangeBlockEvent(this.mob, blockPos1, Blocks.DIRT.defaultBlockState(), !getServerLevel(this.level).getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING))) { // CraftBukkit // Paper - Fix wrong block state
++                    if (org.bukkit.craftbukkit.event.CraftEventFactory.callEntityChangeBlockEvent(this.mob, blockPos1, Blocks.DIRT.defaultBlockState(), !getServerLevel(this.level).getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING, getServerLevel(this.level).purpurConfig.sheepMobGriefingOverride))) { // CraftBukkit // Paper - Fix wrong block state // Purpur - Add mobGriefing override to everything affected
+                         this.level.levelEvent(2001, blockPos1, Block.getId(Blocks.GRASS_BLOCK.defaultBlockState()));
+                         this.level.setBlock(blockPos1, Blocks.DIRT.defaultBlockState(), 2);
+                     }
+diff --git a/net/minecraft/world/entity/ai/goal/RemoveBlockGoal.java b/net/minecraft/world/entity/ai/goal/RemoveBlockGoal.java
+index 3d40911970caf6f1de2a1ebee1df4c077703226a..179597558e93c6e9172207f716f9294de3926c49 100644
+--- a/net/minecraft/world/entity/ai/goal/RemoveBlockGoal.java
++++ b/net/minecraft/world/entity/ai/goal/RemoveBlockGoal.java
+@@ -35,7 +35,7 @@ public class RemoveBlockGoal extends MoveToBlockGoal {
+ 
+     @Override
+     public boolean canUse() {
+-        if (!getServerLevel(this.removerMob).getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING)) {
++        if (!getServerLevel(this.removerMob).getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING, getServerLevel(this.removerMob).purpurConfig.zombieMobGriefingOverride)) { // Purpur - Add mobGriefing override to everything affected
+             return false;
+         } else if (this.nextStartTick > 0) {
+             this.nextStartTick--;
+diff --git a/net/minecraft/world/entity/animal/Fox.java b/net/minecraft/world/entity/animal/Fox.java
+index 37b6bfa8dc1fd4ed0006f6531d2056bcd3c3abae..07767c9d649e7ef2b8fd8e3ac62d99ce13271fe4 100644
+--- a/net/minecraft/world/entity/animal/Fox.java
++++ b/net/minecraft/world/entity/animal/Fox.java
+@@ -1058,7 +1058,7 @@ public class Fox extends Animal {
+         }
+ 
+         protected void onReachedTarget() {
+-            if (getServerLevel(Fox.this.level()).getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING)) {
++            if (getServerLevel(Fox.this.level()).getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING, getServerLevel(Fox.this.level()).purpurConfig.foxMobGriefingOverride)) { // Purpur - Add mobGriefing override to everything affected
+                 BlockState blockState = Fox.this.level().getBlockState(this.blockPos);
+                 if (blockState.is(Blocks.SWEET_BERRY_BUSH)) {
+                     this.pickSweetBerries(blockState);
+diff --git a/net/minecraft/world/entity/animal/Rabbit.java b/net/minecraft/world/entity/animal/Rabbit.java
+index 5fc1d6ba3cb54f2ea8c6fe3f994ffea2cca5784b..39154b01e23c626cc29b587ae96c611062e5b791 100644
+--- a/net/minecraft/world/entity/animal/Rabbit.java
++++ b/net/minecraft/world/entity/animal/Rabbit.java
+@@ -648,7 +648,7 @@ public class Rabbit extends Animal {
+         @Override
+         public boolean canUse() {
+             if (this.nextStartTick <= 0) {
+-                if (!getServerLevel(this.rabbit).getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING)) {
++                if (!getServerLevel(this.rabbit).getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING, getServerLevel(this.rabbit).purpurConfig.rabbitMobGriefingOverride)) { // Purpur - Add mobGriefing override to everything affected
+                     return false;
+                 }
+ 
+diff --git a/net/minecraft/world/entity/animal/SnowGolem.java b/net/minecraft/world/entity/animal/SnowGolem.java
+index 2350e5a0ba3d4c3782332a4ef51e2b0ef0b53f39..a747c4bd3a41025c6dc225e5d809ba03f57069f8 100644
+--- a/net/minecraft/world/entity/animal/SnowGolem.java
++++ b/net/minecraft/world/entity/animal/SnowGolem.java
+@@ -136,7 +136,7 @@ public class SnowGolem extends AbstractGolem implements Shearable, RangedAttackM
+                 this.hurtServer(serverLevel, this.damageSources().onFire().knownCause(org.bukkit.event.entity.EntityDamageEvent.DamageCause.MELTING), 1.0F); // CraftBukkit
+             }
+ 
+-            if (!serverLevel.getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING)) {
++            if (!serverLevel.getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING, serverLevel.purpurConfig.snowGolemMobGriefingOverride)) { // Purpur - Add mobGriefing override to everything affected
+                 return;
+             }
+ 
+diff --git a/net/minecraft/world/entity/boss/enderdragon/EnderDragon.java b/net/minecraft/world/entity/boss/enderdragon/EnderDragon.java
+index 40c92ff02c22ef18b36f5d8677096dc82a60f1bb..6191a58d09fd0ca4625ecb90be78cce2049e4696 100644
+--- a/net/minecraft/world/entity/boss/enderdragon/EnderDragon.java
++++ b/net/minecraft/world/entity/boss/enderdragon/EnderDragon.java
+@@ -544,7 +544,7 @@ public class EnderDragon extends Mob implements Enemy {
+                     BlockPos blockPos = new BlockPos(i, i1, i2);
+                     BlockState blockState = level.getBlockState(blockPos);
+                     if (!blockState.isAir() && !blockState.is(BlockTags.DRAGON_TRANSPARENT)) {
+-                        if (level.getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING) && !blockState.is(BlockTags.DRAGON_IMMUNE)) {
++                        if (level.getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING, level.purpurConfig.enderDragonMobGriefingOverride) && !blockState.is(BlockTags.DRAGON_IMMUNE)) { // Purpur - Add mobGriefing override to everything affected
+                             // CraftBukkit start - Add blocks to list rather than destroying them
+                             //flag1 = level.removeBlock(blockPos, false) || flag1;
+                             flag1 = true;
+diff --git a/net/minecraft/world/entity/boss/wither/WitherBoss.java b/net/minecraft/world/entity/boss/wither/WitherBoss.java
+index f5aabc5d181881a1da96cff5da299c9d136aa1ec..068676a28b6aaca96b91769b1ab59fea1ec97866 100644
+--- a/net/minecraft/world/entity/boss/wither/WitherBoss.java
++++ b/net/minecraft/world/entity/boss/wither/WitherBoss.java
+@@ -495,7 +495,7 @@ public class WitherBoss extends Monster implements RangedAttackMob {
+ 
+             if (this.destroyBlocksTick > 0) {
+                 this.destroyBlocksTick--;
+-                if (this.destroyBlocksTick == 0 && level.getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING)) {
++                if (this.destroyBlocksTick == 0 && level.getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING, level.purpurConfig.witherMobGriefingOverride)) { // Purpur - Add mobGriefing override to everything affected
+                     boolean flag = false;
+                     int alternativeTarget = Mth.floor(this.getBbWidth() / 2.0F + 1.0F);
+                     int floor = Mth.floor(this.getBbHeight());
+diff --git a/net/minecraft/world/entity/monster/EnderMan.java b/net/minecraft/world/entity/monster/EnderMan.java
+index c83d7c43969a94432f6bec076f78fb500f672926..002fef87101e2c98c8a091d416cb4729bd092455 100644
+--- a/net/minecraft/world/entity/monster/EnderMan.java
++++ b/net/minecraft/world/entity/monster/EnderMan.java
+@@ -507,7 +507,7 @@ public class EnderMan extends Monster implements NeutralMob {
+         public boolean canUse() {
+             if (!enderman.level().purpurConfig.endermanAllowGriefing) return false; // Purpur - Add enderman and creeper griefing controls
+             return this.enderman.getCarriedBlock() != null
+-                && getServerLevel(this.enderman).getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING)
++                && getServerLevel(this.enderman).getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING, this.enderman.level().purpurConfig.endermanMobGriefingOverride) // Purpur - Add mobGriefing override to everything affected
+                 && this.enderman.getRandom().nextInt(reducedTickDelay(2000)) == 0;
+         }
+ 
+@@ -657,7 +657,7 @@ public class EnderMan extends Monster implements NeutralMob {
+         public boolean canUse() {
+             if (!enderman.level().purpurConfig.endermanAllowGriefing) return false; // Purpur - Add enderman and creeper griefing controls
+             return this.enderman.getCarriedBlock() == null
+-                && getServerLevel(this.enderman).getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING)
++                && getServerLevel(this.enderman).getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING, this.enderman.level().purpurConfig.endermanMobGriefingOverride) // Purpur - Add mobGriefing override to everything affected
+                 && this.enderman.getRandom().nextInt(reducedTickDelay(20)) == 0;
+         }
+ 
+diff --git a/net/minecraft/world/entity/monster/Evoker.java b/net/minecraft/world/entity/monster/Evoker.java
+index e8aac93cffa3a9d4105c03c1aeb4d571ee0eba6c..4d1d746e39d136243dc620c89b29daf80dc62230 100644
+--- a/net/minecraft/world/entity/monster/Evoker.java
++++ b/net/minecraft/world/entity/monster/Evoker.java
+@@ -306,7 +306,7 @@ public class Evoker extends SpellcasterIllager {
+                 return false;
+             } else {
+                 ServerLevel serverLevel = getServerLevel(Evoker.this.level());
+-                if (!serverLevel.getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING)) {
++                if (!serverLevel.getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING, serverLevel.purpurConfig.evokerMobGriefingOverride)) { // Purpur - Add mobGriefing override to everything affected
+                     return false;
+                 } else {
+                     List<Sheep> nearbyEntities = serverLevel.getNearbyEntities(
+diff --git a/net/minecraft/world/entity/monster/Ravager.java b/net/minecraft/world/entity/monster/Ravager.java
+index 9e7b07f353fb8f0650b8805014c371368eaabcd5..23b6d3c9746e1ee641d8b19ec50805cb271a9cc9 100644
+--- a/net/minecraft/world/entity/monster/Ravager.java
++++ b/net/minecraft/world/entity/monster/Ravager.java
+@@ -179,7 +179,7 @@ public class Ravager extends Raider {
+ 
+             if (this.level() instanceof ServerLevel serverLevel
+                 && this.horizontalCollision
+-                && serverLevel.getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING)) {
++                && serverLevel.getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING, serverLevel.purpurConfig.ravagerMobGriefingOverride)) { // Purpur - Add mobGriefing override to everything affected
+                 boolean flag = false;
+                 AABB aabb = this.getBoundingBox().inflate(0.2);
+ 
+diff --git a/net/minecraft/world/entity/monster/Silverfish.java b/net/minecraft/world/entity/monster/Silverfish.java
+index c200d57841304ba0d7a76fdd9a440fe9f2b25136..6f4aaeb645d9638764c3516d2f1501661ac56170 100644
+--- a/net/minecraft/world/entity/monster/Silverfish.java
++++ b/net/minecraft/world/entity/monster/Silverfish.java
+@@ -170,7 +170,7 @@ public class Silverfish extends Monster {
+                 return false;
+             } else {
+                 RandomSource random = this.mob.getRandom();
+-                if (getServerLevel(this.mob).getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING) && random.nextInt(reducedTickDelay(10)) == 0) {
++                if (getServerLevel(this.mob).getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING, getServerLevel(this.mob).purpurConfig.silverfishMobGriefingOverride) && random.nextInt(reducedTickDelay(10)) == 0) { // Purpur - Add mobGriefing override to everything affected
+                     this.selectedDirection = Direction.getRandom(random);
+                     BlockPos blockPos = BlockPos.containing(this.mob.getX(), this.mob.getY() + 0.5, this.mob.getZ()).relative(this.selectedDirection);
+                     BlockState blockState = this.mob.level().getBlockState(blockPos);
+@@ -247,7 +247,7 @@ public class Silverfish extends Monster {
+                             Block block = blockState.getBlock();
+                             if (block instanceof InfestedBlock) {
+                                 // CraftBukkit start
+-                                BlockState afterState = getServerLevel(level).getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING) ? blockState.getFluidState().createLegacyBlock() : ((InfestedBlock) block).hostStateByInfested(level.getBlockState(blockPos1)); // Paper - fix wrong block state
++                                BlockState afterState = getServerLevel(level).getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING, getServerLevel(level).purpurConfig.silverfishMobGriefingOverride) ? blockState.getFluidState().createLegacyBlock() : ((InfestedBlock) block).hostStateByInfested(level.getBlockState(blockPos1)); // Paper - fix wrong block state // Purpur - Add mobGriefing override to everything affected
+                                 if (!org.bukkit.craftbukkit.event.CraftEventFactory.callEntityChangeBlockEvent(this.silverfish, blockPos1, afterState)) { // Paper - fix wrong block state
+                                     continue;
+                                 }
+diff --git a/net/minecraft/world/entity/monster/piglin/Piglin.java b/net/minecraft/world/entity/monster/piglin/Piglin.java
+index a86cd2da7d0467e5b7d79ec2daceb65c86750445..c600c9b1ea4fe08abdce0aed30f61ef073039c7c 100644
+--- a/net/minecraft/world/entity/monster/piglin/Piglin.java
++++ b/net/minecraft/world/entity/monster/piglin/Piglin.java
+@@ -450,7 +450,7 @@ public class Piglin extends AbstractPiglin implements CrossbowAttackMob, Invento
+ 
+     @Override
+     public boolean wantsToPickUp(ServerLevel level, ItemStack stack) {
+-        return level.getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING) && this.canPickUpLoot() && PiglinAi.wantsToPickup(this, stack);
++        return level.getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING, level.purpurConfig.piglinMobGriefingOverride) && this.canPickUpLoot() && PiglinAi.wantsToPickup(this, stack); // Purpur - Add mobGriefing override to everything affected
+     }
+ 
+     protected boolean canReplaceCurrentItem(ItemStack candidate) {
+diff --git a/net/minecraft/world/entity/projectile/LargeFireball.java b/net/minecraft/world/entity/projectile/LargeFireball.java
+index dd0ec97ea4561d2dccf735580faf0d65d6ac4b0d..779879f8d678a5e45e2752e6e033cc350acac89b 100644
+--- a/net/minecraft/world/entity/projectile/LargeFireball.java
++++ b/net/minecraft/world/entity/projectile/LargeFireball.java
+@@ -20,20 +20,20 @@ public class LargeFireball extends Fireball {
+ 
+     public LargeFireball(EntityType<? extends LargeFireball> entityType, Level level) {
+         super(entityType, level);
+-        this.isIncendiary = (level instanceof ServerLevel serverLevel) && serverLevel.getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING); // CraftBukkit
++        this.isIncendiary = (level instanceof ServerLevel serverLevel) && serverLevel.getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING, serverLevel.purpurConfig.fireballsMobGriefingOverride); // CraftBukkit // Purpur - Add mobGriefing override to everything affected
+     }
+ 
+     public LargeFireball(Level level, LivingEntity owner, Vec3 movement, int explosionPower) {
+         super(EntityType.FIREBALL, owner, movement, level);
+         this.explosionPower = explosionPower;
+-        this.isIncendiary = (level instanceof ServerLevel serverLevel) && serverLevel.getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING); // CraftBukkit
++        this.isIncendiary = (level instanceof ServerLevel serverLevel) && serverLevel.getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING, serverLevel.purpurConfig.fireballsMobGriefingOverride); // CraftBukkit // Purpur - Add mobGriefing override to everything affected
+     }
+ 
+     @Override
+     protected void onHit(HitResult result) {
+         super.onHit(result);
+         if (this.level() instanceof ServerLevel serverLevel) {
+-            boolean _boolean = serverLevel.getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING);
++            boolean _boolean = serverLevel.getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING, serverLevel.purpurConfig.fireballsMobGriefingOverride); // Purpur - Add mobGriefing override to everything affected
+             // CraftBukkit start - fire ExplosionPrimeEvent
+             org.bukkit.event.entity.ExplosionPrimeEvent event = new org.bukkit.event.entity.ExplosionPrimeEvent((org.bukkit.entity.Explosive) this.getBukkitEntity());
+             if (event.callEvent()) {
+diff --git a/net/minecraft/world/entity/projectile/Projectile.java b/net/minecraft/world/entity/projectile/Projectile.java
+index dae6619f4670c6f68dae7e4b10b0b6a8bbe6dc2e..44166e077009ef0bdab95ed2df7c8252bf6bb87f 100644
+--- a/net/minecraft/world/entity/projectile/Projectile.java
++++ b/net/minecraft/world/entity/projectile/Projectile.java
+@@ -436,7 +436,7 @@ public abstract class Projectile extends Entity implements TraceableEntity {
+     @Override
+     public boolean mayInteract(ServerLevel level, BlockPos pos) {
+         Entity owner = this.getOwner();
+-        return owner instanceof Player ? owner.mayInteract(level, pos) : owner == null || level.getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING);
++        return owner instanceof Player ? owner.mayInteract(level, pos) : owner == null || level.getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING, level.purpurConfig.projectilesMobGriefingOverride); // Purpur - Add mobGriefing override to everything affected
+     }
+ 
+     public boolean mayBreak(ServerLevel level) {
+diff --git a/net/minecraft/world/entity/projectile/SmallFireball.java b/net/minecraft/world/entity/projectile/SmallFireball.java
+index 8c84cea43fc0e42a576004663670977eac99f1a6..6a0ec832226894687b28f35e1a8a190ba1542201 100644
+--- a/net/minecraft/world/entity/projectile/SmallFireball.java
++++ b/net/minecraft/world/entity/projectile/SmallFireball.java
+@@ -25,7 +25,7 @@ public class SmallFireball extends Fireball {
+         super(EntityType.SMALL_FIREBALL, owner, movement, level);
+         // CraftBukkit start
+         if (this.getOwner() != null && this.getOwner() instanceof Mob) {
+-            this.isIncendiary = (level instanceof ServerLevel serverLevel) && serverLevel.getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING);
++            this.isIncendiary = (level instanceof ServerLevel serverLevel) && serverLevel.getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING, serverLevel.purpurConfig.fireballsMobGriefingOverride); // Purpur - Add mobGriefing override to everything affected
+         }
+         // CraftBukkit end
+     }
+diff --git a/net/minecraft/world/entity/raid/Raider.java b/net/minecraft/world/entity/raid/Raider.java
+index a495789b2d21fa9a24d5dca4ecfa196ddce49466..2254493c889b8967011c09dc448ba375d82e2035 100644
+--- a/net/minecraft/world/entity/raid/Raider.java
++++ b/net/minecraft/world/entity/raid/Raider.java
+@@ -401,7 +401,7 @@ public abstract class Raider extends PatrollingMonster {
+         }
+ 
+         private boolean cannotPickUpBanner() {
+-            if (!getServerLevel(this.mob).getGameRules().getBoolean(net.minecraft.world.level.GameRules.RULE_MOBGRIEFING)) return true; // Paper - respect game and entity rules for picking up items
++            if (!getServerLevel(this.mob).getGameRules().getBoolean(net.minecraft.world.level.GameRules.RULE_MOBGRIEFING, this.mob.level().purpurConfig.pillagerMobGriefingOverride)) return true; // Paper - respect game and entity rules for picking up items // Purpur - Add mobGriefing override to everything affected
+             if (!this.mob.hasActiveRaid()) {
+                 return true;
+             } else if (this.mob.getCurrentRaid().isOver()) {
+diff --git a/net/minecraft/world/level/GameRules.java b/net/minecraft/world/level/GameRules.java
+index d5536dd40a1e9a2e05967652f690abbbca287852..d510503a8ad272255aeba20a916642828023fd19 100644
+--- a/net/minecraft/world/level/GameRules.java
++++ b/net/minecraft/world/level/GameRules.java
+@@ -354,6 +354,13 @@ public class GameRules {
+         this.<T>getRule(key).setFrom(rule, level); // CraftBukkit - per-world
+     }
+ 
++    public boolean getBoolean(GameRules.Key<GameRules.BooleanValue> key, Boolean gameRuleOverride) {
++        if (gameRuleOverride != null) {
++            return gameRuleOverride;
++        }
++        return this.getBoolean(key);
++    }
++
+     public boolean getBoolean(GameRules.Key<GameRules.BooleanValue> key) {
+         return this.getRule(key).get();
+     }
+diff --git a/net/minecraft/world/level/block/CropBlock.java b/net/minecraft/world/level/block/CropBlock.java
+index b370b955ac8636275dfada4f38a7ca10297f7dac..d345235db5a8d5f1ebbeb5bbb5e7924cb1a75518 100644
+--- a/net/minecraft/world/level/block/CropBlock.java
++++ b/net/minecraft/world/level/block/CropBlock.java
+@@ -169,7 +169,7 @@ public class CropBlock extends VegetationBlock implements BonemealableBlock {
+     @Override
+     protected void entityInside(BlockState state, Level level, BlockPos pos, Entity entity, InsideBlockEffectApplier effectApplier) {
+         if (!new io.papermc.paper.event.entity.EntityInsideBlockEvent(entity.getBukkitEntity(), org.bukkit.craftbukkit.block.CraftBlock.at(level, pos)).callEvent()) { return; } // Paper - Add EntityInsideBlockEvent
+-        if (level instanceof ServerLevel serverLevel && entity instanceof Ravager && serverLevel.purpurConfig.ravagerGriefableBlocks.contains(serverLevel.getBlockState(pos).getBlock()) && org.bukkit.craftbukkit.event.CraftEventFactory.callEntityChangeBlockEvent(entity, pos, Blocks.AIR.defaultBlockState(), !serverLevel.getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING))) { // CraftBukkit // Purpur - Configurable ravager griefable blocks list
++        if (level instanceof ServerLevel serverLevel && entity instanceof Ravager && serverLevel.purpurConfig.ravagerGriefableBlocks.contains(serverLevel.getBlockState(pos).getBlock()) && org.bukkit.craftbukkit.event.CraftEventFactory.callEntityChangeBlockEvent(entity, pos, Blocks.AIR.defaultBlockState(), !serverLevel.getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING, serverLevel.purpurConfig.ravagerMobGriefingOverride))) { // CraftBukkit // Purpur - Configurable ravager griefable blocks list // Purpur - Add mobGriefing override to everything affected
+             serverLevel.destroyBlock(pos, true, entity);
+         }
+ 
+diff --git a/net/minecraft/world/level/block/FarmBlock.java b/net/minecraft/world/level/block/FarmBlock.java
+index 9883e6d1a1b76155c8ba1817fda6615b4742e18e..dc1ad33f801c308871931d271f97ff9185e9effb 100644
+--- a/net/minecraft/world/level/block/FarmBlock.java
++++ b/net/minecraft/world/level/block/FarmBlock.java
+@@ -114,7 +114,7 @@ public class FarmBlock extends Block {
+         if (level instanceof ServerLevel serverLevel
+             && (serverLevel.purpurConfig.farmlandTrampleHeight >= 0D ? fallDistance >= serverLevel.purpurConfig.farmlandTrampleHeight : level.random.nextFloat() < fallDistance - 0.5) // Purpur - Configurable farmland trample height
+             && entity instanceof LivingEntity
+-            && (entity instanceof Player || serverLevel.getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING))
++            && (entity instanceof Player || serverLevel.getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING, serverLevel.purpurConfig.farmlandMobGriefingOverride)) // Purpur - Add mobGriefing override to everything affected
+             && entity.getBbWidth() * entity.getBbWidth() * entity.getBbHeight() > 0.512F) {
+                 // CraftBukkit start - Interact soil
+                 org.bukkit.event.Cancellable cancellable;
+diff --git a/net/minecraft/world/level/block/PowderSnowBlock.java b/net/minecraft/world/level/block/PowderSnowBlock.java
+index a9b0e6c4dbccfc4f2ca31e0ff67bc7fb3ec4bef2..46a2726c3aa50d48eca8702cfde4ac87e2cfae82 100644
+--- a/net/minecraft/world/level/block/PowderSnowBlock.java
++++ b/net/minecraft/world/level/block/PowderSnowBlock.java
+@@ -94,7 +94,7 @@ public class PowderSnowBlock extends Block implements BucketPickup {
+                         // CraftBukkit - move down
+                     && entity1.mayInteract(serverLevel, blockPos)) {
+                     // CraftBukkit start
+-                    if (!org.bukkit.craftbukkit.event.CraftEventFactory.callEntityChangeBlockEvent(entity1, pos, Blocks.AIR.defaultBlockState(), !(serverLevel.getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING) || entity1 instanceof Player))) {
++                    if (!org.bukkit.craftbukkit.event.CraftEventFactory.callEntityChangeBlockEvent(entity1, pos, Blocks.AIR.defaultBlockState(), !(serverLevel.getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING, serverLevel.purpurConfig.powderSnowMobGriefingOverride) || entity1 instanceof Player))) { // Purpur - Add mobGriefing override to everything affected
+                         return;
+                     }
+                     // CraftBukkit end
+diff --git a/net/minecraft/world/level/block/TurtleEggBlock.java b/net/minecraft/world/level/block/TurtleEggBlock.java
+index a23626dbfacf98ef1bc7918ca35406fa71307bed..41e51cb4f1a2443361b52c8523688e2c307a1d75 100644
+--- a/net/minecraft/world/level/block/TurtleEggBlock.java
++++ b/net/minecraft/world/level/block/TurtleEggBlock.java
+@@ -214,7 +214,7 @@ public class TurtleEggBlock extends Block {
+         // Purpur end - Option to disable turtle egg trampling with feather falling
+         if (entity instanceof Player) return true;
+ 
+-        return level.getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING);
++        return level.getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING, level.purpurConfig.turtleEggsMobGriefingOverride); // Purpur - Add mobGriefing override to everything affected
+         // Purpur end - Add turtle egg block options
+     }
+ }

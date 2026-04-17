@@ -1,0 +1,34 @@
+--- a/net/minecraft/world/item/crafting/Ingredient.java
++++ b/net/minecraft/world/item/crafting/Ingredient.java
+@@ -36,6 +_,7 @@
+     // CraftBukkit start
+     @javax.annotation.Nullable
+     private java.util.Set<ItemStack> itemStacks; // Paper - Improve exact choice recipe ingredients
++    public Predicate<org.bukkit.inventory.ItemStack> predicate; // Purpur - Add predicate to recipe's ExactChoice ingredient
+ 
+     public boolean isExact() {
+         return this.itemStacks != null;
+@@ -88,6 +_,11 @@
+             return this.itemStacks.contains(stack); // Paper - Improve exact choice recipe ingredients (hashing FTW!)
+         }
+         // CraftBukkit end
++        // Purpur start - Add predicate to recipe's ExactChoice ingredient
++        if (predicate != null) {
++            return predicate.test(stack.asBukkitCopy());
++        }
++        // Purpur end - Add predicate to recipe's ExactChoice ingredient
+         return stack.is(this.values);
+     }
+ 
+@@ -95,9 +_,9 @@
+     @Override
+     public boolean acceptsItem(final io.papermc.paper.inventory.recipe.ItemOrExact itemOrExact) {
+         return switch (itemOrExact) {
+-            case io.papermc.paper.inventory.recipe.ItemOrExact.Item(final Holder<Item> item) ->
++            case io.papermc.paper.inventory.recipe.ItemOrExact.Item(Holder<Item> item) ->
+                 !this.isExact() && this.values.contains(item);
+-            case io.papermc.paper.inventory.recipe.ItemOrExact.Exact(final ItemStack exact) ->
++            case io.papermc.paper.inventory.recipe.ItemOrExact.Exact(ItemStack exact) ->
+                 this.isExact() && this.itemStacks.contains(exact);
+         };
+         // Paper end - Improve exact choice recipe ingredients

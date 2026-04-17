@@ -1,0 +1,17 @@
+--- a/net/minecraft/server/network/PlayerChunkSender.java
++++ b/net/minecraft/server/network/PlayerChunkSender.java
+@@ -53,9 +_,11 @@
+     }
+ 
+     public void sendNextChunks(ServerPlayer player) {
+-        if (this.unacknowledgedBatches < this.maxUnacknowledgedBatches) {
+-            float max = Math.max(1.0F, this.desiredChunksPerTick);
+-            this.batchQuota = Math.min(this.batchQuota + this.desiredChunksPerTick, max);
++        final int effectiveMaxUnacknowledgedBatches = org.bonfiremc.hearth.chunks.BonfireChunkSendBudget.maxUnacknowledgedBatches(player, this.maxUnacknowledgedBatches);
++        if (this.unacknowledgedBatches < effectiveMaxUnacknowledgedBatches) {
++            final float effectiveDesiredChunksPerTick = org.bonfiremc.hearth.chunks.BonfireChunkSendBudget.desiredChunksPerTick(player, this.desiredChunksPerTick);
++            float max = Math.max(1.0F, effectiveDesiredChunksPerTick);
++            this.batchQuota = Math.min(this.batchQuota + effectiveDesiredChunksPerTick, max);
+             if (!(this.batchQuota < 1.0F)) {
+                 if (!this.pendingChunks.isEmpty()) {
+                     ServerLevel serverLevel = player.level();

@@ -1,0 +1,45 @@
+--- a/ca/spottedleaf/moonrise/patches/chunk_system/player/RegionizedPlayerChunkLoader.java
++++ b/ca/spottedleaf/moonrise/patches/chunk_system/player/RegionizedPlayerChunkLoader.java
+@@ -43,6 +_,7 @@
+ import java.util.concurrent.TimeUnit;
+ import java.util.concurrent.atomic.AtomicLong;
+ import java.util.function.Function;
++import org.bonfiremc.hearth.chunks.BonfireChunkLoadBudget;
+ 
+ public final class RegionizedPlayerChunkLoader {
+ 
+@@ -647,8 +_,8 @@
+                 throw new IllegalStateException("Ticking removed player chunk loader");
+             }
+             // update rate limits
+-            final double loadRate = this.getMaxChunkLoadRate();
+-            final double genRate = this.getMaxChunkGenRate();
++            final double loadRate = BonfireChunkLoadBudget.loadRate(this.player, this.getMaxChunkLoadRate());
++            final double genRate = BonfireChunkLoadBudget.genRate(this.player, this.getMaxChunkGenRate());
+             final double sendRate = this.getMaxChunkSendRate();
+ 
+             this.chunkLoadTicketLimiter.tickAllocation(time, loadRate, loadRate);
+@@ -680,7 +_,10 @@
+             }
+ 
+             // try to push more chunk loads
+-            final long maxLoads = Math.max(0L, Math.min(MAX_RATE, Math.min(this.loadQueue.size(), this.getMaxChunkLoads())));
++            final long maxLoads = Math.max(0L, Math.min(MAX_RATE, Math.min(
++                this.loadQueue.size(),
++                BonfireChunkLoadBudget.maxConcurrentLoads(this.player, this.getMaxChunkLoads())
++            )));
+             final int maxLoadsThisTick = (int)this.chunkLoadTicketLimiter.takeAllocation(time, loadRate, maxLoads);
+             if (maxLoadsThisTick > 0) {
+                 final LongArrayList chunks = new LongArrayList(maxLoadsThisTick);
+@@ -755,7 +_,10 @@
+             }
+ 
+             // try to push more chunk generations
+-            final long maxGens = Math.max(0L, Math.min(MAX_RATE, Math.min(this.genQueue.size(), this.getMaxChunkGenerates())));
++            final long maxGens = Math.max(0L, Math.min(MAX_RATE, Math.min(
++                this.genQueue.size(),
++                BonfireChunkLoadBudget.maxConcurrentGenerates(this.player, this.getMaxChunkGenerates())
++            )));
+             // preview the allocations, as we may not actually utilise all of them
+             final long maxGensThisTick = this.chunkGenerateTicketLimiter.previewAllocation(time, genRate, maxGens);
+             long ratedGensThisTick = 0L;

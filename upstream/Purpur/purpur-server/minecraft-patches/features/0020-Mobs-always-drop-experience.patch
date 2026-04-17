@@ -1,0 +1,1320 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: BillyGalbreath <blake.galbreath@gmail.com>
+Date: Tue, 21 Dec 2021 20:40:42 -0600
+Subject: [PATCH] Mobs always drop experience
+
+
+diff --git a/net/minecraft/world/entity/GlowSquid.java b/net/minecraft/world/entity/GlowSquid.java
+index 1c446cec71aa163374ab9832c961a6b4c3fc534b..86a694b94045b47f6e98c480645f75738b8a052c 100644
+--- a/net/minecraft/world/entity/GlowSquid.java
++++ b/net/minecraft/world/entity/GlowSquid.java
+@@ -61,6 +61,13 @@ public class GlowSquid extends Squid {
+     }
+     // Purpur end - Toggle for water sensitive mob damage
+ 
++    // Purpur start - Mobs always drop experience
++    @Override
++    protected boolean isAlwaysExperienceDropper() {
++        return this.level().purpurConfig.glowSquidAlwaysDropExp;
++    }
++    // Purpur end - Mobs always drop experience
++
+     @Override
+     protected ParticleOptions getInkParticle() {
+         return ParticleTypes.GLOW_SQUID_INK;
+diff --git a/net/minecraft/world/entity/ambient/Bat.java b/net/minecraft/world/entity/ambient/Bat.java
+index 2d2b44f2617732bcdfd969454f80b9ad4af470a1..4e046158a0782a1fd08c6b4d8d332b6eb5bce7aa 100644
+--- a/net/minecraft/world/entity/ambient/Bat.java
++++ b/net/minecraft/world/entity/ambient/Bat.java
+@@ -118,6 +118,13 @@ public class Bat extends AmbientCreature {
+     }
+     // Purpur end - Toggle for water sensitive mob damage
+ 
++    // Purpur start - Mobs always drop experience
++    @Override
++    protected boolean isAlwaysExperienceDropper() {
++        return this.level().purpurConfig.batAlwaysDropExp;
++    }
++    // Purpur end - Mobs always drop experience
++
+     @Override
+     public boolean isFlapping() {
+         return !this.isResting() && this.tickCount % 10.0F == 0.0F;
+diff --git a/net/minecraft/world/entity/animal/Bee.java b/net/minecraft/world/entity/animal/Bee.java
+index 31a9451417272ec5bb6a6cbc3ec308f6c5cd057f..ca5651f15552f91fba650747d28a75c00fa11442 100644
+--- a/net/minecraft/world/entity/animal/Bee.java
++++ b/net/minecraft/world/entity/animal/Bee.java
+@@ -495,6 +495,13 @@ public class Bee extends Animal implements NeutralMob, FlyingAnimal {
+     }
+     // Purpur end - Toggle for water sensitive mob damage
+ 
++    // Purpur start - Mobs always drop experience
++    @Override
++    protected boolean isAlwaysExperienceDropper() {
++        return this.level().purpurConfig.beeAlwaysDropExp;
++    }
++    // Purpur end - Mobs always drop experience
++
+     @Override
+     public int getRemainingPersistentAngerTime() {
+         return this.entityData.get(DATA_REMAINING_ANGER_TIME);
+diff --git a/net/minecraft/world/entity/animal/Cat.java b/net/minecraft/world/entity/animal/Cat.java
+index 41f303078b2e1f0460215fbfe27ff06fd5783c35..09d518a59fe93afbeacb2d41a0c9d287f4a74443 100644
+--- a/net/minecraft/world/entity/animal/Cat.java
++++ b/net/minecraft/world/entity/animal/Cat.java
+@@ -139,6 +139,13 @@ public class Cat extends TamableAnimal {
+     }
+     // Purpur end - Toggle for water sensitive mob damage
+ 
++    // Purpur start - Mobs always drop experience
++    @Override
++    protected boolean isAlwaysExperienceDropper() {
++        return this.level().purpurConfig.catAlwaysDropExp;
++    }
++    // Purpur end - Mobs always drop experience
++
+     @Override
+     protected void registerGoals() {
+         this.temptGoal = new Cat.CatTemptGoal(this, 0.6, stack -> stack.is(ItemTags.CAT_FOOD), true);
+diff --git a/net/minecraft/world/entity/animal/Chicken.java b/net/minecraft/world/entity/animal/Chicken.java
+index 58f7690a05febac5c57ba7ea2aff93b7d94a4291..eaf913805195a580e3aa816dc28053abb9bdc246 100644
+--- a/net/minecraft/world/entity/animal/Chicken.java
++++ b/net/minecraft/world/entity/animal/Chicken.java
+@@ -116,6 +116,13 @@ public class Chicken extends Animal {
+     }
+     // Purpur end - Toggle for water sensitive mob damage
+ 
++    // Purpur start - Mobs always drop experience
++    @Override
++    protected boolean isAlwaysExperienceDropper() {
++        return this.level().purpurConfig.chickenAlwaysDropExp;
++    }
++    // Purpur end - Mobs always drop experience
++
+     @Override
+     protected void registerGoals() {
+         this.goalSelector.addGoal(0, new FloatGoal(this));
+diff --git a/net/minecraft/world/entity/animal/Cod.java b/net/minecraft/world/entity/animal/Cod.java
+index 6128ed595cb97cc11c1a0e1e1673b3af8e428fb8..7e08573cba6efcd78fcce37bccc2923f374f3c44 100644
+--- a/net/minecraft/world/entity/animal/Cod.java
++++ b/net/minecraft/world/entity/animal/Cod.java
+@@ -39,6 +39,13 @@ public class Cod extends AbstractSchoolingFish {
+     }
+     // Purpur end - Toggle for water sensitive mob damage
+ 
++    // Purpur start - Mobs always drop experience
++    @Override
++    protected boolean isAlwaysExperienceDropper() {
++        return this.level().purpurConfig.codAlwaysDropExp;
++    }
++    // Purpur end - Mobs always drop experience
++
+     @Override
+     public ItemStack getBucketItemStack() {
+         return new ItemStack(Items.COD_BUCKET);
+diff --git a/net/minecraft/world/entity/animal/Cow.java b/net/minecraft/world/entity/animal/Cow.java
+index 09ee10a17e15431a2937cf753e670dc000a2e36f..b2fa170b14bc3037e5c143d320d0a1ef24738f1c 100644
+--- a/net/minecraft/world/entity/animal/Cow.java
++++ b/net/minecraft/world/entity/animal/Cow.java
+@@ -71,6 +71,13 @@ public class Cow extends AbstractCow {
+     }
+     // Purpur end - Toggle for water sensitive mob damage
+ 
++    // Purpur start - Mobs always drop experience
++    @Override
++    protected boolean isAlwaysExperienceDropper() {
++        return this.level().purpurConfig.cowAlwaysDropExp;
++    }
++    // Purpur end - Mobs always drop experience
++
+     @Override
+     protected void registerGoals() {
+         super.registerGoals();
+diff --git a/net/minecraft/world/entity/animal/Dolphin.java b/net/minecraft/world/entity/animal/Dolphin.java
+index cff87e0047167751d9b4672a0caae642f15426a9..23696a5e2871ea07f34d4b4f6a20e2896ac3f5bd 100644
+--- a/net/minecraft/world/entity/animal/Dolphin.java
++++ b/net/minecraft/world/entity/animal/Dolphin.java
+@@ -166,6 +166,13 @@ public class Dolphin extends AgeableWaterCreature {
+     }
+     // Purpur end - Toggle for water sensitive mob damage
+ 
++    // Purpur start - Mobs always drop experience
++    @Override
++    protected boolean isAlwaysExperienceDropper() {
++        return this.level().purpurConfig.dolphinAlwaysDropExp;
++    }
++    // Purpur end - Mobs always drop experience
++
+     @Nullable
+     @Override
+     public SpawnGroupData finalizeSpawn(
+diff --git a/net/minecraft/world/entity/animal/Fox.java b/net/minecraft/world/entity/animal/Fox.java
+index 23e119ce82c3a0541b40249b20f133e39fac6858..8964bb5098c0dc36741af3656af6bc0b5b463abe 100644
+--- a/net/minecraft/world/entity/animal/Fox.java
++++ b/net/minecraft/world/entity/animal/Fox.java
+@@ -202,6 +202,13 @@ public class Fox extends Animal {
+     }
+     // Purpur end - Toggle for water sensitive mob damage
+ 
++    // Purpur start - Mobs always drop experience
++    @Override
++    protected boolean isAlwaysExperienceDropper() {
++        return this.level().purpurConfig.foxAlwaysDropExp;
++    }
++    // Purpur end - Mobs always drop experience
++
+     @Override
+     protected void defineSynchedData(SynchedEntityData.Builder builder) {
+         super.defineSynchedData(builder);
+diff --git a/net/minecraft/world/entity/animal/HappyGhast.java b/net/minecraft/world/entity/animal/HappyGhast.java
+index 57d691d4bdb63d20ee582f28c475b5eaca128269..fb37669b4d66bb853eabf2d15a369d7ad5a2dbb9 100644
+--- a/net/minecraft/world/entity/animal/HappyGhast.java
++++ b/net/minecraft/world/entity/animal/HappyGhast.java
+@@ -160,6 +160,13 @@ public class HappyGhast extends Animal {
+     }
+     // Purpur end - Toggle for water sensitive mob damage
+ 
++    // Purpur start - Mobs always drop experience
++    @Override
++    protected boolean isAlwaysExperienceDropper() {
++        return this.level().purpurConfig.happyGhastAlwaysDropExp;
++    }
++    // Purpur end - Mobs always drop experience
++
+     @Override
+     protected void ageBoundaryReached() {
+         if (this.isBaby()) {
+diff --git a/net/minecraft/world/entity/animal/IronGolem.java b/net/minecraft/world/entity/animal/IronGolem.java
+index 006df1758bdaeb55a7db938afd9e00c575a62e60..8885ab56eb72c0106ef57359ca11f70c012fc348 100644
+--- a/net/minecraft/world/entity/animal/IronGolem.java
++++ b/net/minecraft/world/entity/animal/IronGolem.java
+@@ -107,6 +107,13 @@ public class IronGolem extends AbstractGolem implements NeutralMob {
+     }
+     // Purpur end - Toggle for water sensitive mob damage
+ 
++    // Purpur start - Mobs always drop experience
++    @Override
++    protected boolean isAlwaysExperienceDropper() {
++        return this.level().purpurConfig.ironGolemAlwaysDropExp;
++    }
++    // Purpur end - Mobs always drop experience
++
+     @Override
+     protected void registerGoals() {
+         if (this.level().purpurConfig.ironGolemPoppyCalm) this.goalSelector.addGoal(0, new org.purpurmc.purpur.entity.ai.ReceiveFlower(this)); // Purpur - Iron golem calm anger options
+diff --git a/net/minecraft/world/entity/animal/MushroomCow.java b/net/minecraft/world/entity/animal/MushroomCow.java
+index 298cd49b28b5efb0f6401c19fc083a3714cb9aeb..5750f87944ea84d59674d1df7f5d48121d987a54 100644
+--- a/net/minecraft/world/entity/animal/MushroomCow.java
++++ b/net/minecraft/world/entity/animal/MushroomCow.java
+@@ -100,6 +100,13 @@ public class MushroomCow extends AbstractCow implements Shearable {
+     }
+     // Purpur end - Toggle for water sensitive mob damage
+ 
++    // Purpur start - Mobs always drop experience
++    @Override
++    protected boolean isAlwaysExperienceDropper() {
++        return this.level().purpurConfig.mooshroomAlwaysDropExp;
++    }
++    // Purpur end - Mobs always drop experience
++
+     @Override
+     public float getWalkTargetValue(BlockPos pos, LevelReader level) {
+         return level.getBlockState(pos.below()).is(Blocks.MYCELIUM) ? 10.0F : level.getPathfindingCostFromLightLevels(pos);
+diff --git a/net/minecraft/world/entity/animal/Ocelot.java b/net/minecraft/world/entity/animal/Ocelot.java
+index d92af280d85856d57f3031dfaf7c644cbfc18f15..4c20569ec5c504c582575851ab1d74248289b1c0 100644
+--- a/net/minecraft/world/entity/animal/Ocelot.java
++++ b/net/minecraft/world/entity/animal/Ocelot.java
+@@ -103,6 +103,13 @@ public class Ocelot extends Animal {
+     }
+     // Purpur end - Toggle for water sensitive mob damage
+ 
++    // Purpur start - Mobs always drop experience
++    @Override
++    protected boolean isAlwaysExperienceDropper() {
++        return this.level().purpurConfig.ocelotAlwaysDropExp;
++    }
++    // Purpur end - Mobs always drop experience
++
+     public boolean isTrusting() {
+         return this.entityData.get(DATA_TRUSTING);
+     }
+diff --git a/net/minecraft/world/entity/animal/Panda.java b/net/minecraft/world/entity/animal/Panda.java
+index 4678f432b6a8f74bbd121aee41f1b093888946f7..02bfa88568e635770675ea9173f2cf3ca21457fa 100644
+--- a/net/minecraft/world/entity/animal/Panda.java
++++ b/net/minecraft/world/entity/animal/Panda.java
+@@ -156,6 +156,13 @@ public class Panda extends Animal {
+     }
+     // Purpur end - Toggle for water sensitive mob damage
+ 
++    // Purpur start - Mobs always drop experience
++    @Override
++    protected boolean isAlwaysExperienceDropper() {
++        return this.level().purpurConfig.pandaAlwaysDropExp;
++    }
++    // Purpur end - Mobs always drop experience
++
+     @Override
+     protected boolean canDispenserEquipIntoSlot(EquipmentSlot slot) {
+         return slot == EquipmentSlot.MAINHAND && this.canPickUpLoot();
+diff --git a/net/minecraft/world/entity/animal/Parrot.java b/net/minecraft/world/entity/animal/Parrot.java
+index 92f43418e5b21eb2a323a12649a96e0f62764618..dddf3a2e372bd0d483c1da01d36fe59b17b3d4e2 100644
+--- a/net/minecraft/world/entity/animal/Parrot.java
++++ b/net/minecraft/world/entity/animal/Parrot.java
+@@ -215,6 +215,13 @@ public class Parrot extends ShoulderRidingEntity implements FlyingAnimal {
+     }
+     // Purpur end - Toggle for water sensitive mob damage
+ 
++    // Purpur start - Mobs always drop experience
++    @Override
++    protected boolean isAlwaysExperienceDropper() {
++        return this.level().purpurConfig.parrotAlwaysDropExp;
++    }
++    // Purpur end - Mobs always drop experience
++
+     @Nullable
+     @Override
+     public SpawnGroupData finalizeSpawn(
+diff --git a/net/minecraft/world/entity/animal/Pig.java b/net/minecraft/world/entity/animal/Pig.java
+index 6f318222011e3bc57c4f0b92c0fba1f410a1d65e..adbbe938c14d14a628d9963acec57c32661957cd 100644
+--- a/net/minecraft/world/entity/animal/Pig.java
++++ b/net/minecraft/world/entity/animal/Pig.java
+@@ -105,6 +105,13 @@ public class Pig extends Animal implements ItemSteerable {
+     }
+     // Purpur end - Toggle for water sensitive mob damage
+ 
++    // Purpur start - Mobs always drop experience
++    @Override
++    protected boolean isAlwaysExperienceDropper() {
++        return this.level().purpurConfig.pigAlwaysDropExp;
++    }
++    // Purpur end - Mobs always drop experience
++
+     @Override
+     protected void registerGoals() {
+         this.goalSelector.addGoal(0, new FloatGoal(this));
+diff --git a/net/minecraft/world/entity/animal/PolarBear.java b/net/minecraft/world/entity/animal/PolarBear.java
+index a800acb671a18287f1407bd293a433f1fe039ce5..e0b51b482607ec5a9f5b4d13d918d79b2f52f9c0 100644
+--- a/net/minecraft/world/entity/animal/PolarBear.java
++++ b/net/minecraft/world/entity/animal/PolarBear.java
+@@ -139,6 +139,13 @@ public class PolarBear extends Animal implements NeutralMob {
+     }
+     // Purpur end - Toggle for water sensitive mob damage
+ 
++    // Purpur start - Mobs always drop experience
++    @Override
++    protected boolean isAlwaysExperienceDropper() {
++        return this.level().purpurConfig.polarBearAlwaysDropExp;
++    }
++    // Purpur end - Mobs always drop experience
++
+     @Nullable
+     @Override
+     public AgeableMob getBreedOffspring(ServerLevel level, AgeableMob otherParent) {
+diff --git a/net/minecraft/world/entity/animal/Pufferfish.java b/net/minecraft/world/entity/animal/Pufferfish.java
+index a9219906038a24831b3d1e6851af4225b60616c3..685176ce37538cbbc614401db568acdb0ad264bb 100644
+--- a/net/minecraft/world/entity/animal/Pufferfish.java
++++ b/net/minecraft/world/entity/animal/Pufferfish.java
+@@ -73,6 +73,13 @@ public class Pufferfish extends AbstractFish {
+     }
+     // Purpur end - Toggle for water sensitive mob damage
+ 
++    // Purpur start - Mobs always drop experience
++    @Override
++    protected boolean isAlwaysExperienceDropper() {
++        return this.level().purpurConfig.pufferfishAlwaysDropExp;
++    }
++    // Purpur end - Mobs always drop experience
++
+     @Override
+     protected void defineSynchedData(SynchedEntityData.Builder builder) {
+         super.defineSynchedData(builder);
+diff --git a/net/minecraft/world/entity/animal/Rabbit.java b/net/minecraft/world/entity/animal/Rabbit.java
+index dcbbe3406cf481e2e1d5c4cc6baaa5ac564b1ad1..1af1b33702296f9aa74c33436ea2904c5e5ae43d 100644
+--- a/net/minecraft/world/entity/animal/Rabbit.java
++++ b/net/minecraft/world/entity/animal/Rabbit.java
+@@ -167,6 +167,13 @@ public class Rabbit extends Animal {
+     }
+     // Purpur end - Toggle for water sensitive mob damage
+ 
++    // Purpur start - Mobs always drop experience
++    @Override
++    protected boolean isAlwaysExperienceDropper() {
++        return this.level().purpurConfig.rabbitAlwaysDropExp;
++    }
++    // Purpur end - Mobs always drop experience
++
+     @Override
+     public void registerGoals() {
+         this.goalSelector.addGoal(1, new FloatGoal(this));
+diff --git a/net/minecraft/world/entity/animal/Salmon.java b/net/minecraft/world/entity/animal/Salmon.java
+index 3c517936aee31fcf246787c033688870a2349e55..d2679beaa3be6de36227c5b66609e0df393c4376 100644
+--- a/net/minecraft/world/entity/animal/Salmon.java
++++ b/net/minecraft/world/entity/animal/Salmon.java
+@@ -65,6 +65,13 @@ public class Salmon extends AbstractSchoolingFish {
+     }
+     // Purpur end - Toggle for water sensitive mob damage
+ 
++    // Purpur start - Mobs always drop experience
++    @Override
++    protected boolean isAlwaysExperienceDropper() {
++        return this.level().purpurConfig.salmonAlwaysDropExp;
++    }
++    // Purpur end - Mobs always drop experience
++
+     @Override
+     public int getMaxSchoolSize() {
+         return 5;
+diff --git a/net/minecraft/world/entity/animal/SnowGolem.java b/net/minecraft/world/entity/animal/SnowGolem.java
+index 8917b3d2d75dc1a0ddf1b6dd64267f69506e80dc..8984a4fc0aae9fd72bc3f7222003c7593810ab77 100644
+--- a/net/minecraft/world/entity/animal/SnowGolem.java
++++ b/net/minecraft/world/entity/animal/SnowGolem.java
+@@ -88,6 +88,13 @@ public class SnowGolem extends AbstractGolem implements Shearable, RangedAttackM
+     }
+     // Purpur end - Configurable entity base attributes
+ 
++    // Purpur start - Mobs always drop experience
++    @Override
++    protected boolean isAlwaysExperienceDropper() {
++        return this.level().purpurConfig.snowGolemAlwaysDropExp;
++    }
++    // Purpur end - Mobs always drop experience
++
+     @Override
+     protected void registerGoals() {
+         this.goalSelector.addGoal(0, new org.purpurmc.purpur.entity.ai.HasRider(this)); // Purpur - Ridables
+diff --git a/net/minecraft/world/entity/animal/Squid.java b/net/minecraft/world/entity/animal/Squid.java
+index 2108cbddc9a880347ff36fc4ce8b56e8215b9eac..8371f3892e50150db018f0b265986ffab37f21e7 100644
+--- a/net/minecraft/world/entity/animal/Squid.java
++++ b/net/minecraft/world/entity/animal/Squid.java
+@@ -106,6 +106,13 @@ public class Squid extends AgeableWaterCreature {
+     }
+     // Purpur end - Toggle for water sensitive mob damage
+ 
++    // Purpur start - Mobs always drop experience
++    @Override
++    protected boolean isAlwaysExperienceDropper() {
++        return this.level().purpurConfig.squidAlwaysDropExp;
++    }
++    // Purpur end - Mobs always drop experience
++
+     @Override
+     protected void registerGoals() {
+         this.goalSelector.addGoal(0, new Squid.SquidRandomMovementGoal(this));
+diff --git a/net/minecraft/world/entity/animal/TropicalFish.java b/net/minecraft/world/entity/animal/TropicalFish.java
+index 4510798913f94474b16ab6cbfa32dc0fdf0a226a..8d1fa86c6f4881c05f11fa80018b8de7f4920006 100644
+--- a/net/minecraft/world/entity/animal/TropicalFish.java
++++ b/net/minecraft/world/entity/animal/TropicalFish.java
+@@ -103,6 +103,13 @@ public class TropicalFish extends AbstractSchoolingFish {
+     }
+     // Purpur end - Toggle for water sensitive mob damage
+ 
++    // Purpur start - Mobs always drop experience
++    @Override
++    protected boolean isAlwaysExperienceDropper() {
++        return this.level().purpurConfig.tropicalFishAlwaysDropExp;
++    }
++    // Purpur end - Mobs always drop experience
++
+     public static String getPredefinedName(int variantId) {
+         return "entity.minecraft.tropical_fish.predefined." + variantId;
+     }
+diff --git a/net/minecraft/world/entity/animal/Turtle.java b/net/minecraft/world/entity/animal/Turtle.java
+index 3c2ded73af16360474fb0410456e94746393ca0e..9bdc1f10e3b40672449ad166f130ecabdacc75d3 100644
+--- a/net/minecraft/world/entity/animal/Turtle.java
++++ b/net/minecraft/world/entity/animal/Turtle.java
+@@ -125,6 +125,13 @@ public class Turtle extends Animal {
+     }
+     // Purpur end - Toggle for water sensitive mob damage
+ 
++    // Purpur start - Mobs always drop experience
++    @Override
++    protected boolean isAlwaysExperienceDropper() {
++        return this.level().purpurConfig.turtleAlwaysDropExp;
++    }
++    // Purpur end - Mobs always drop experience
++
+     public void setHomePos(BlockPos homePos) {
+         this.homePos = homePos;
+     }
+diff --git a/net/minecraft/world/entity/animal/axolotl/Axolotl.java b/net/minecraft/world/entity/animal/axolotl/Axolotl.java
+index f364117decd00f00ae0dc729addb5a35008b6ca5..05070562ee7ea23d4e2fa602466f097827ffa35b 100644
+--- a/net/minecraft/world/entity/animal/axolotl/Axolotl.java
++++ b/net/minecraft/world/entity/animal/axolotl/Axolotl.java
+@@ -161,6 +161,13 @@ public class Axolotl extends Animal implements Bucketable {
+     }
+     // Purpur end - Toggle for water sensitive mob damage
+ 
++    // Purpur start - Mobs always drop experience
++    @Override
++    protected boolean isAlwaysExperienceDropper() {
++        return this.level().purpurConfig.axolotlAlwaysDropExp;
++    }
++    // Purpur end - Mobs always drop experience
++
+     @Override
+     public float getWalkTargetValue(BlockPos pos, LevelReader level) {
+         return 0.0F;
+diff --git a/net/minecraft/world/entity/animal/goat/Goat.java b/net/minecraft/world/entity/animal/goat/Goat.java
+index 952d9f5c2bb2e869df475a78b04be10e7541829e..386591ff45c45146b75d44071f54c2789db15a21 100644
+--- a/net/minecraft/world/entity/animal/goat/Goat.java
++++ b/net/minecraft/world/entity/animal/goat/Goat.java
+@@ -146,6 +146,13 @@ public class Goat extends Animal {
+     }
+     // Purpur end - Toggle for water sensitive mob damage
+ 
++    // Purpur start - Mobs always drop experience
++    @Override
++    protected boolean isAlwaysExperienceDropper() {
++        return this.level().purpurConfig.goatAlwaysDropExp;
++    }
++    // Purpur end - Mobs always drop experience
++
+     @Override
+     protected Brain.Provider<Goat> brainProvider() {
+         return Brain.provider(MEMORY_TYPES, SENSOR_TYPES);
+diff --git a/net/minecraft/world/entity/animal/horse/Donkey.java b/net/minecraft/world/entity/animal/horse/Donkey.java
+index 9b17b1acf63fddb5f5b6cdf95283ae8f619a8120..0783d41a6c4622b03d9d368c1af949af1292dcb7 100644
+--- a/net/minecraft/world/entity/animal/horse/Donkey.java
++++ b/net/minecraft/world/entity/animal/horse/Donkey.java
+@@ -54,6 +54,13 @@ public class Donkey extends AbstractChestedHorse {
+     }
+     // Purpur end - Toggle for water sensitive mob damage
+ 
++    // Purpur start - Mobs always drop experience
++    @Override
++    protected boolean isAlwaysExperienceDropper() {
++        return this.level().purpurConfig.donkeyAlwaysDropExp;
++    }
++    // Purpur end - Mobs always drop experience
++
+     @Override
+     public SoundEvent getAmbientSound() {
+         return SoundEvents.DONKEY_AMBIENT;
+diff --git a/net/minecraft/world/entity/animal/horse/Horse.java b/net/minecraft/world/entity/animal/horse/Horse.java
+index 2928159447a87ea8cc945e73e2e81ad1dbe13680..f1080a40f759b30b921b88b4f6edd35f4795406f 100644
+--- a/net/minecraft/world/entity/animal/horse/Horse.java
++++ b/net/minecraft/world/entity/animal/horse/Horse.java
+@@ -85,6 +85,13 @@ public class Horse extends AbstractHorse {
+     }
+     // Purpur end - Toggle for water sensitive mob damage
+ 
++    // Purpur start - Mobs always drop experience
++    @Override
++    protected boolean isAlwaysExperienceDropper() {
++        return this.level().purpurConfig.horseAlwaysDropExp;
++    }
++    // Purpur end - Mobs always drop experience
++
+     @Override
+     protected void randomizeAttributes(RandomSource random) {
+         this.getAttribute(Attributes.MAX_HEALTH).setBaseValue(generateMaxHealth(random::nextInt));
+diff --git a/net/minecraft/world/entity/animal/horse/Llama.java b/net/minecraft/world/entity/animal/horse/Llama.java
+index ea25c48cb60aff6fbc82a364789beff92b054a88..455a84ffa16152137409777e1fddbab5a21bd57d 100644
+--- a/net/minecraft/world/entity/animal/horse/Llama.java
++++ b/net/minecraft/world/entity/animal/horse/Llama.java
+@@ -168,6 +168,13 @@ public class Llama extends AbstractChestedHorse implements RangedAttackMob {
+     }
+     // Purpur end - Toggle for water sensitive mob damage
+ 
++    // Purpur start - Mobs always drop experience
++    @Override
++    protected boolean isAlwaysExperienceDropper() {
++        return this.level().purpurConfig.llamaAlwaysDropExp;
++    }
++    // Purpur end - Mobs always drop experience
++
+     public boolean isTraderLlama() {
+         return false;
+     }
+diff --git a/net/minecraft/world/entity/animal/horse/Mule.java b/net/minecraft/world/entity/animal/horse/Mule.java
+index 14a17d4b33b276f28e45ce06de06793a73a50916..6e0b1c83a6a03d12296e0e3b2c805b64d8378abd 100644
+--- a/net/minecraft/world/entity/animal/horse/Mule.java
++++ b/net/minecraft/world/entity/animal/horse/Mule.java
+@@ -53,6 +53,13 @@ public class Mule extends AbstractChestedHorse {
+     }
+     // Purpur end - Toggle for water sensitive mob damage
+ 
++    // Purpur start - Mobs always drop experience
++    @Override
++    protected boolean isAlwaysExperienceDropper() {
++        return this.level().purpurConfig.muleAlwaysDropExp;
++    }
++    // Purpur end - Mobs always drop experience
++
+     @Override
+     public SoundEvent getAmbientSound() {
+         return SoundEvents.MULE_AMBIENT;
+diff --git a/net/minecraft/world/entity/animal/horse/SkeletonHorse.java b/net/minecraft/world/entity/animal/horse/SkeletonHorse.java
+index cff709a28830a842a499f7dfe3b8bc0b703c9af4..f6ab6ecc10486694d77905239a82bda4dec94936 100644
+--- a/net/minecraft/world/entity/animal/horse/SkeletonHorse.java
++++ b/net/minecraft/world/entity/animal/horse/SkeletonHorse.java
+@@ -80,6 +80,13 @@ public class SkeletonHorse extends AbstractHorse {
+     }
+     // Purpur end - Toggle for water sensitive mob damage
+ 
++    // Purpur start - Mobs always drop experience
++    @Override
++    protected boolean isAlwaysExperienceDropper() {
++        return this.level().purpurConfig.skeletonHorseAlwaysDropExp;
++    }
++    // Purpur end - Mobs always drop experience
++
+     public static AttributeSupplier.Builder createAttributes() {
+         return createBaseHorseAttributes().add(Attributes.MAX_HEALTH, 15.0).add(Attributes.MOVEMENT_SPEED, 0.2F);
+     }
+diff --git a/net/minecraft/world/entity/animal/horse/TraderLlama.java b/net/minecraft/world/entity/animal/horse/TraderLlama.java
+index 81e902ba31b55722f4d257e918b56fa654083916..a8540e491161d82a6b72262e4414f8bb16705d47 100644
+--- a/net/minecraft/world/entity/animal/horse/TraderLlama.java
++++ b/net/minecraft/world/entity/animal/horse/TraderLlama.java
+@@ -84,6 +84,13 @@ public class TraderLlama extends Llama {
+     }
+     // Purpur end - Toggle for water sensitive mob damage
+ 
++    // Purpur start - Mobs always drop experience
++    @Override
++    protected boolean isAlwaysExperienceDropper() {
++        return this.level().purpurConfig.traderLlamaAlwaysDropExp;
++    }
++    // Purpur end - Mobs always drop experience
++
+     @Override
+     public boolean isTraderLlama() {
+         return true;
+diff --git a/net/minecraft/world/entity/animal/horse/ZombieHorse.java b/net/minecraft/world/entity/animal/horse/ZombieHorse.java
+index e78fac0a5e37d53afbc200f015adab60b3bfc9da..e59172ea2fafbab673dc3e9bdc25055f3d8f85ee 100644
+--- a/net/minecraft/world/entity/animal/horse/ZombieHorse.java
++++ b/net/minecraft/world/entity/animal/horse/ZombieHorse.java
+@@ -76,6 +76,13 @@ public class ZombieHorse extends AbstractHorse {
+     }
+     // Purpur end - Toggle for water sensitive mob damage
+ 
++    // Purpur start - Mobs always drop experience
++    @Override
++    protected boolean isAlwaysExperienceDropper() {
++        return this.level().purpurConfig.zombieHorseAlwaysDropExp;
++    }
++    // Purpur end - Mobs always drop experience
++
+     public static AttributeSupplier.Builder createAttributes() {
+         return createBaseHorseAttributes().add(Attributes.MAX_HEALTH, 15.0).add(Attributes.MOVEMENT_SPEED, 0.2F);
+     }
+diff --git a/net/minecraft/world/entity/animal/sheep/Sheep.java b/net/minecraft/world/entity/animal/sheep/Sheep.java
+index 8394453415a0d098de6176662f97df2174a83697..500c87f5f7b2eda637103125d6e541f7c9fb385f 100644
+--- a/net/minecraft/world/entity/animal/sheep/Sheep.java
++++ b/net/minecraft/world/entity/animal/sheep/Sheep.java
+@@ -101,6 +101,13 @@ public class Sheep extends Animal implements Shearable {
+     }
+     // Purpur end - Toggle for water sensitive mob damage
+ 
++    // Purpur start - Mobs always drop experience
++    @Override
++    protected boolean isAlwaysExperienceDropper() {
++        return this.level().purpurConfig.sheepAlwaysDropExp;
++    }
++    // Purpur end - Mobs always drop experience
++
+     @Override
+     protected void registerGoals() {
+         this.eatBlockGoal = new EatBlockGoal(this);
+diff --git a/net/minecraft/world/entity/animal/wolf/Wolf.java b/net/minecraft/world/entity/animal/wolf/Wolf.java
+index d492c6bcbc45e312a5ee2d3567a26853b514d027..7e7cb9db1c84bdb173b444bec90663a93fb3b549 100644
+--- a/net/minecraft/world/entity/animal/wolf/Wolf.java
++++ b/net/minecraft/world/entity/animal/wolf/Wolf.java
+@@ -230,6 +230,13 @@ public class Wolf extends TamableAnimal implements NeutralMob {
+     }
+     // Purpur end - Toggle for water sensitive mob damage
+ 
++    // Purpur start - Mobs always drop experience
++    @Override
++    protected boolean isAlwaysExperienceDropper() {
++        return this.level().purpurConfig.wolfAlwaysDropExp;
++    }
++    // Purpur end - Mobs always drop experience
++
+     @Override
+     protected void registerGoals() {
+         this.goalSelector.addGoal(1, new FloatGoal(this));
+diff --git a/net/minecraft/world/entity/boss/wither/WitherBoss.java b/net/minecraft/world/entity/boss/wither/WitherBoss.java
+index d4e4aa98e2259aa7f5dbce1585257a4e24b4782f..0613d80561f50e32dc4d1c471521f001659d017d 100644
+--- a/net/minecraft/world/entity/boss/wither/WitherBoss.java
++++ b/net/minecraft/world/entity/boss/wither/WitherBoss.java
+@@ -228,6 +228,13 @@ public class WitherBoss extends Monster implements RangedAttackMob {
+     }
+     // Purpur end - Toggle for water sensitive mob damage
+ 
++    // Purpur start - Mobs always drop experience
++    @Override
++    protected boolean isAlwaysExperienceDropper() {
++        return this.level().purpurConfig.witherAlwaysDropExp;
++    }
++    // Purpur end - Mobs always drop experience
++
+     @Override
+     protected PathNavigation createNavigation(Level level) {
+         FlyingPathNavigation flyingPathNavigation = new FlyingPathNavigation(this, level);
+diff --git a/net/minecraft/world/entity/monster/Blaze.java b/net/minecraft/world/entity/monster/Blaze.java
+index 2bd645e163ca7b118beec5194e5c0b00e6dff563..fa21b7dba208d5ba6ecf1d2b68965bb50642b53a 100644
+--- a/net/minecraft/world/entity/monster/Blaze.java
++++ b/net/minecraft/world/entity/monster/Blaze.java
+@@ -83,6 +83,13 @@ public class Blaze extends Monster {
+     }
+     // Purpur end - Configurable entity base attributes
+ 
++    // Purpur start - Mobs always drop experience
++    @Override
++    protected boolean isAlwaysExperienceDropper() {
++        return this.level().purpurConfig.blazeAlwaysDropExp;
++    }
++    // Purpur end - Mobs always drop experience
++
+     @Override
+     protected void registerGoals() {
+         this.goalSelector.addGoal(0, new org.purpurmc.purpur.entity.ai.HasRider(this)); // Purpur - Ridables
+diff --git a/net/minecraft/world/entity/monster/CaveSpider.java b/net/minecraft/world/entity/monster/CaveSpider.java
+index 420fe0d01d0b173a6a541f77e1aaca3f3bb565e7..7eca4b751d900c6d6ee34993c3e2368127d19e03 100644
+--- a/net/minecraft/world/entity/monster/CaveSpider.java
++++ b/net/minecraft/world/entity/monster/CaveSpider.java
+@@ -58,6 +58,13 @@ public class CaveSpider extends Spider {
+     }
+     // Purpur end - Toggle for water sensitive mob damage
+ 
++    // Purpur start - Mobs always drop experience
++    @Override
++    protected boolean isAlwaysExperienceDropper() {
++        return this.level().purpurConfig.caveSpiderAlwaysDropExp;
++    }
++    // Purpur end - Mobs always drop experience
++
+     @Override
+     public boolean doHurtTarget(ServerLevel level, Entity source) {
+         if (super.doHurtTarget(level, source)) {
+diff --git a/net/minecraft/world/entity/monster/Creeper.java b/net/minecraft/world/entity/monster/Creeper.java
+index 7ebce241a4195326bbecd158952f2ec559196ad3..2839c755e5ca58896bc14f95ce4889d48ec415b3 100644
+--- a/net/minecraft/world/entity/monster/Creeper.java
++++ b/net/minecraft/world/entity/monster/Creeper.java
+@@ -272,6 +272,13 @@ public class Creeper extends Monster {
+     }
+     // Purpur end - Toggle for water sensitive mob damage
+ 
++    // Purpur start - Mobs always drop experience
++    @Override
++    protected boolean isAlwaysExperienceDropper() {
++        return this.level().purpurConfig.creeperAlwaysDropExp;
++    }
++    // Purpur end - Mobs always drop experience
++
+     @Override
+     public SoundEvent getHurtSound(DamageSource damageSource) {
+         return SoundEvents.CREEPER_HURT;
+diff --git a/net/minecraft/world/entity/monster/Drowned.java b/net/minecraft/world/entity/monster/Drowned.java
+index 6e8ae9aa0b5051b7fb303476e52ba2cc76c29c84..2e6d0f035a01277aa28bbe912d5df8dc4cf04547 100644
+--- a/net/minecraft/world/entity/monster/Drowned.java
++++ b/net/minecraft/world/entity/monster/Drowned.java
+@@ -130,6 +130,13 @@ public class Drowned extends Zombie implements RangedAttackMob {
+     }
+     // Purpur end - Toggle for water sensitive mob damage
+ 
++    // Purpur start - Mobs always drop experience
++    @Override
++    protected boolean isAlwaysExperienceDropper() {
++        return this.level().purpurConfig.drownedAlwaysDropExp;
++    }
++    // Purpur end - Mobs always drop experience
++
+     @Override
+     protected void addBehaviourGoals() {
+         this.goalSelector.addGoal(1, new Drowned.DrownedGoToWaterGoal(this, 1.0));
+diff --git a/net/minecraft/world/entity/monster/ElderGuardian.java b/net/minecraft/world/entity/monster/ElderGuardian.java
+index 287b6fea404d4f1f121219f92918dc2d1c0ac780..ab1c050ff326a072e817a05958b8f4ec803af063 100644
+--- a/net/minecraft/world/entity/monster/ElderGuardian.java
++++ b/net/minecraft/world/entity/monster/ElderGuardian.java
+@@ -58,6 +58,13 @@ public class ElderGuardian extends Guardian {
+     }
+     // Purpur end - Toggle for water sensitive mob damage
+ 
++    // Purpur start - Mobs always drop experience
++    @Override
++    protected boolean isAlwaysExperienceDropper() {
++        return this.level().purpurConfig.elderGuardianAlwaysDropExp;
++    }
++    // Purpur end - Mobs always drop experience
++
+     public static AttributeSupplier.Builder createAttributes() {
+         return Guardian.createAttributes().add(Attributes.MOVEMENT_SPEED, 0.3F).add(Attributes.ATTACK_DAMAGE, 8.0).add(Attributes.MAX_HEALTH, 80.0);
+     }
+diff --git a/net/minecraft/world/entity/monster/EnderMan.java b/net/minecraft/world/entity/monster/EnderMan.java
+index 73d66dffa57b31e4d772438f6d2f23cfbbcfb281..fcdb3ee493e65bf002e78862f00061336e731ede 100644
+--- a/net/minecraft/world/entity/monster/EnderMan.java
++++ b/net/minecraft/world/entity/monster/EnderMan.java
+@@ -114,6 +114,13 @@ public class EnderMan extends Monster implements NeutralMob {
+     }
+     // Purpur end - Configurable entity base attributes
+ 
++    // Purpur start - Mobs always drop experience
++    @Override
++    protected boolean isAlwaysExperienceDropper() {
++        return this.level().purpurConfig.endermanAlwaysDropExp;
++    }
++    // Purpur end - Mobs always drop experience
++
+     @Override
+     protected void registerGoals() {
+         this.goalSelector.addGoal(0, new FloatGoal(this));
+diff --git a/net/minecraft/world/entity/monster/Endermite.java b/net/minecraft/world/entity/monster/Endermite.java
+index 4565a592face29a077d96fc0cd52bceaed52f755..4ea0e5f24664a1c8f2c8bdae559784434374adf6 100644
+--- a/net/minecraft/world/entity/monster/Endermite.java
++++ b/net/minecraft/world/entity/monster/Endermite.java
+@@ -79,6 +79,13 @@ public class Endermite extends Monster {
+     }
+     // Purpur end - Toggle for water sensitive mob damage
+ 
++    // Purpur start - Mobs always drop experience
++    @Override
++    protected boolean isAlwaysExperienceDropper() {
++        return this.level().purpurConfig.endermiteAlwaysDropExp;
++    }
++    // Purpur end - Mobs always drop experience
++
+     @Override
+     protected void registerGoals() {
+         this.goalSelector.addGoal(1, new FloatGoal(this));
+diff --git a/net/minecraft/world/entity/monster/Evoker.java b/net/minecraft/world/entity/monster/Evoker.java
+index d77e3b0f36ec4a262ff375d9e2da912553a344f8..5c1992a7fd5d7c5fe23ebfad35a828263d0ff93c 100644
+--- a/net/minecraft/world/entity/monster/Evoker.java
++++ b/net/minecraft/world/entity/monster/Evoker.java
+@@ -80,6 +80,13 @@ public class Evoker extends SpellcasterIllager {
+     }
+     // Purpur end - Toggle for water sensitive mob damage
+ 
++    // Purpur start - Mobs always drop experience
++    @Override
++    protected boolean isAlwaysExperienceDropper() {
++        return this.level().purpurConfig.evokerAlwaysDropExp;
++    }
++    // Purpur end - Mobs always drop experience
++
+     @Override
+     protected void registerGoals() {
+         super.registerGoals();
+diff --git a/net/minecraft/world/entity/monster/Ghast.java b/net/minecraft/world/entity/monster/Ghast.java
+index 07ea4f44d9fd32d5be5aae6c36b30806acc9db64..6f312f0b8ab60c839129ea671f2d9c128fa58e58 100644
+--- a/net/minecraft/world/entity/monster/Ghast.java
++++ b/net/minecraft/world/entity/monster/Ghast.java
+@@ -89,6 +89,13 @@ public class Ghast extends Mob implements Enemy {
+     }
+     // Purpur end - Toggle for water sensitive mob damage
+ 
++    // Purpur start - Mobs always drop experience
++    @Override
++    protected boolean isAlwaysExperienceDropper() {
++        return this.level().purpurConfig.ghastAlwaysDropExp;
++    }
++    // Purpur end - Mobs always drop experience
++
+     @Override
+     protected void registerGoals() {
+         this.goalSelector.addGoal(0, new org.purpurmc.purpur.entity.ai.HasRider(this)); // Purpur - Ridables
+diff --git a/net/minecraft/world/entity/monster/Giant.java b/net/minecraft/world/entity/monster/Giant.java
+index ccc2f7906c322a5406467986565074cbddf6cbe0..f4ec41a74b13be98f3ac78521fdd357842bc9ebd 100644
+--- a/net/minecraft/world/entity/monster/Giant.java
++++ b/net/minecraft/world/entity/monster/Giant.java
+@@ -69,6 +69,13 @@ public class Giant extends Monster {
+     }
+     // Purpur end - Toggle for water sensitive mob damage
+ 
++    // Purpur start - Mobs always drop experience
++    @Override
++    protected boolean isAlwaysExperienceDropper() {
++        return this.level().purpurConfig.giantAlwaysDropExp;
++    }
++    // Purpur end - Mobs always drop experience
++
+     public static AttributeSupplier.Builder createAttributes() {
+         return Monster.createMonsterAttributes()
+             .add(Attributes.MAX_HEALTH, 100.0)
+diff --git a/net/minecraft/world/entity/monster/Guardian.java b/net/minecraft/world/entity/monster/Guardian.java
+index 9868117ecf0a3b36f81086297c639f6f274e0055..3ba8da3bd04774fb3131fdbd2aa0bd6c9f31c817 100644
+--- a/net/minecraft/world/entity/monster/Guardian.java
++++ b/net/minecraft/world/entity/monster/Guardian.java
+@@ -105,6 +105,13 @@ public class Guardian extends Monster {
+     }
+     // Purpur end - Toggle for water sensitive mob damage
+ 
++    // Purpur start - Mobs always drop experience
++    @Override
++    protected boolean isAlwaysExperienceDropper() {
++        return this.level().purpurConfig.guardianAlwaysDropExp;
++    }
++    // Purpur end - Mobs always drop experience
++
+     @Override
+     protected void registerGoals() {
+         MoveTowardsRestrictionGoal moveTowardsRestrictionGoal = new MoveTowardsRestrictionGoal(this, 1.0);
+diff --git a/net/minecraft/world/entity/monster/Husk.java b/net/minecraft/world/entity/monster/Husk.java
+index 3f331215ef49c52fa3a53bcf744159d2221111f5..a4ce65911a5d778f60bcedb3acd9fe59a5094c96 100644
+--- a/net/minecraft/world/entity/monster/Husk.java
++++ b/net/minecraft/world/entity/monster/Husk.java
+@@ -75,6 +75,13 @@ public class Husk extends Zombie {
+     }
+     // Purpur end - Toggle for water sensitive mob damage
+ 
++    // Purpur start - Mobs always drop experience
++    @Override
++    protected boolean isAlwaysExperienceDropper() {
++        return this.level().purpurConfig.huskAlwaysDropExp;
++    }
++    // Purpur end - Mobs always drop experience
++
+     public static boolean checkHuskSpawnRules(
+         EntityType<Husk> entityType, ServerLevelAccessor level, EntitySpawnReason spawnReason, BlockPos pos, RandomSource random
+     ) {
+diff --git a/net/minecraft/world/entity/monster/Illusioner.java b/net/minecraft/world/entity/monster/Illusioner.java
+index 4b68c0e999c37b3a3b62b522e2fcc805d2483943..2ea8c8480dcc15eb5b4bc9686554ec912ef1f3f4 100644
+--- a/net/minecraft/world/entity/monster/Illusioner.java
++++ b/net/minecraft/world/entity/monster/Illusioner.java
+@@ -91,6 +91,13 @@ public class Illusioner extends SpellcasterIllager implements RangedAttackMob {
+     }
+     // Purpur end - Toggle for water sensitive mob damage
+ 
++    // Purpur start - Mobs always drop experience
++    @Override
++    protected boolean isAlwaysExperienceDropper() {
++        return this.level().purpurConfig.illusionerAlwaysDropExp;
++    }
++    // Purpur end - Mobs always drop experience
++
+     @Override
+     protected void registerGoals() {
+         super.registerGoals();
+diff --git a/net/minecraft/world/entity/monster/MagmaCube.java b/net/minecraft/world/entity/monster/MagmaCube.java
+index da90b7dc79aa6d01e88c1250fff662ba1b001dc3..7ef0f84d4c449a8991683ca66d7b16ca21ef4cdf 100644
+--- a/net/minecraft/world/entity/monster/MagmaCube.java
++++ b/net/minecraft/world/entity/monster/MagmaCube.java
+@@ -75,6 +75,13 @@ public class MagmaCube extends Slime {
+     }
+     // Purpur end - Toggle for water sensitive mob damage
+ 
++    // Purpur start - Mobs always drop experience
++    @Override
++    protected boolean isAlwaysExperienceDropper() {
++        return this.level().purpurConfig.magmaCubeAlwaysDropExp;
++    }
++    // Purpur end - Mobs always drop experience
++
+     public static AttributeSupplier.Builder createAttributes() {
+         return Monster.createMonsterAttributes().add(Attributes.MOVEMENT_SPEED, 0.2F);
+     }
+diff --git a/net/minecraft/world/entity/monster/Phantom.java b/net/minecraft/world/entity/monster/Phantom.java
+index 2c7f11e165ea9f59dca6de559c7bcba39977cb19..3b812e0860e37d30d5d12f97410ed5fd2babadf6 100644
+--- a/net/minecraft/world/entity/monster/Phantom.java
++++ b/net/minecraft/world/entity/monster/Phantom.java
+@@ -147,6 +147,13 @@ public class Phantom extends Mob implements Enemy {
+     public void setShouldBurnInDay(boolean shouldBurnInDay) { this.shouldBurnInDay = shouldBurnInDay; }
+     // Purpur end - API for any mob to burn daylight
+ 
++    // Purpur start - Mobs always drop experience
++    @Override
++    protected boolean isAlwaysExperienceDropper() {
++        return this.level().purpurConfig.phantomAlwaysDropExp;
++    }
++    // Purpur end - Mobs always drop experience
++
+     @Override
+     public boolean isFlapping() {
+         return (this.getUniqueFlapTickOffset() + this.tickCount) % TICKS_PER_FLAP == 0;
+diff --git a/net/minecraft/world/entity/monster/Pillager.java b/net/minecraft/world/entity/monster/Pillager.java
+index faaf42a029b1a0423c5e10ee3e17e4ba0e70be02..2ed473468032bb6edbd03882b5f5405b90a2f0f4 100644
+--- a/net/minecraft/world/entity/monster/Pillager.java
++++ b/net/minecraft/world/entity/monster/Pillager.java
+@@ -96,6 +96,13 @@ public class Pillager extends AbstractIllager implements CrossbowAttackMob, Inve
+     }
+     // Purpur end - Toggle for water sensitive mob damage
+ 
++    // Purpur start - Mobs always drop experience
++    @Override
++    protected boolean isAlwaysExperienceDropper() {
++        return this.level().purpurConfig.pillagerAlwaysDropExp;
++    }
++    // Purpur end - Mobs always drop experience
++
+     @Override
+     protected void registerGoals() {
+         super.registerGoals();
+diff --git a/net/minecraft/world/entity/monster/Ravager.java b/net/minecraft/world/entity/monster/Ravager.java
+index d75df6de50f9830efeea826d0ebdac17f56d4c4b..2b85cedf235e673d6030c2a649abf60b5792b242 100644
+--- a/net/minecraft/world/entity/monster/Ravager.java
++++ b/net/minecraft/world/entity/monster/Ravager.java
+@@ -108,6 +108,13 @@ public class Ravager extends Raider {
+     }
+     // Purpur end - Toggle for water sensitive mob damage
+ 
++    // Purpur start - Mobs always drop experience
++    @Override
++    protected boolean isAlwaysExperienceDropper() {
++        return this.level().purpurConfig.ravagerAlwaysDropExp;
++    }
++    // Purpur end - Mobs always drop experience
++
+     @Override
+     protected void registerGoals() {
+         super.registerGoals();
+diff --git a/net/minecraft/world/entity/monster/Shulker.java b/net/minecraft/world/entity/monster/Shulker.java
+index 9f6b05671c973e1262cbd6673aac7f1d3a74e2e3..a46ca09f661a4f8f3ede6550d613e0c704a9389b 100644
+--- a/net/minecraft/world/entity/monster/Shulker.java
++++ b/net/minecraft/world/entity/monster/Shulker.java
+@@ -141,6 +141,13 @@ public class Shulker extends AbstractGolem implements Enemy {
+     }
+     // Purpur end - Toggle for water sensitive mob damage
+ 
++    // Purpur start - Mobs always drop experience
++    @Override
++    protected boolean isAlwaysExperienceDropper() {
++        return this.level().purpurConfig.shulkerAlwaysDropExp;
++    }
++    // Purpur end - Mobs always drop experience
++
+     @Override
+     protected void registerGoals() {
+         this.goalSelector.addGoal(0, new org.purpurmc.purpur.entity.ai.HasRider(this)); // Purpur - Ridables
+diff --git a/net/minecraft/world/entity/monster/Silverfish.java b/net/minecraft/world/entity/monster/Silverfish.java
+index 51714029d4ea5033014dcefd25f74cc0c9a72dbd..bcae390578519fef362a126fbcf2b5cfd18c3dc4 100644
+--- a/net/minecraft/world/entity/monster/Silverfish.java
++++ b/net/minecraft/world/entity/monster/Silverfish.java
+@@ -73,6 +73,13 @@ public class Silverfish extends Monster {
+     }
+     // Purpur end - Toggle for water sensitive mob damage
+ 
++    // Purpur start - Mobs always drop experience
++    @Override
++    protected boolean isAlwaysExperienceDropper() {
++        return this.level().purpurConfig.silverfishAlwaysDropExp;
++    }
++    // Purpur end - Mobs always drop experience
++
+     @Override
+     protected void registerGoals() {
+         this.friendsGoal = new Silverfish.SilverfishWakeUpFriendsGoal(this);
+diff --git a/net/minecraft/world/entity/monster/Skeleton.java b/net/minecraft/world/entity/monster/Skeleton.java
+index 555ada78c81ce912bf8d57a9a094102804b372ef..c6ab31fa5204220f4c89dd48dd0966036a4975cf 100644
+--- a/net/minecraft/world/entity/monster/Skeleton.java
++++ b/net/minecraft/world/entity/monster/Skeleton.java
+@@ -58,6 +58,13 @@ public class Skeleton extends AbstractSkeleton {
+     }
+     // Purpur end - Toggle for water sensitive mob damage
+ 
++    // Purpur start - Mobs always drop experience
++    @Override
++    protected boolean isAlwaysExperienceDropper() {
++        return this.level().purpurConfig.skeletonAlwaysDropExp;
++    }
++    // Purpur end - Mobs always drop experience
++
+     @Override
+     protected void defineSynchedData(SynchedEntityData.Builder builder) {
+         super.defineSynchedData(builder);
+diff --git a/net/minecraft/world/entity/monster/Slime.java b/net/minecraft/world/entity/monster/Slime.java
+index 29b500eb4c010ff83d8474f8ee5602c479243e19..b299fc08fe900b4d48ce3e6986bcea000253053e 100644
+--- a/net/minecraft/world/entity/monster/Slime.java
++++ b/net/minecraft/world/entity/monster/Slime.java
+@@ -141,6 +141,13 @@ public class Slime extends Mob implements Enemy {
+     }
+     // Purpur end - Toggle for water sensitive mob damage
+ 
++    // Purpur start - Mobs always drop experience
++    @Override
++    protected boolean isAlwaysExperienceDropper() {
++        return this.level().purpurConfig.slimeAlwaysDropExp;
++    }
++    // Purpur end - Mobs always drop experience
++
+     @Override
+     protected void registerGoals() {
+         this.goalSelector.addGoal(0, new org.purpurmc.purpur.entity.ai.HasRider(this)); // Purpur - Ridables
+diff --git a/net/minecraft/world/entity/monster/Spider.java b/net/minecraft/world/entity/monster/Spider.java
+index e7bd63256979e41670772c3c5293c9a637593541..7c50ed0b7bd0d7138b80613ea08519ae457f49a3 100644
+--- a/net/minecraft/world/entity/monster/Spider.java
++++ b/net/minecraft/world/entity/monster/Spider.java
+@@ -82,6 +82,13 @@ public class Spider extends Monster {
+     }
+     // Purpur end - Toggle for water sensitive mob damage
+ 
++    // Purpur start - Mobs always drop experience
++    @Override
++    protected boolean isAlwaysExperienceDropper() {
++        return this.level().purpurConfig.spiderAlwaysDropExp;
++    }
++    // Purpur end - Mobs always drop experience
++
+     @Override
+     protected void registerGoals() {
+         this.goalSelector.addGoal(1, new FloatGoal(this));
+diff --git a/net/minecraft/world/entity/monster/Stray.java b/net/minecraft/world/entity/monster/Stray.java
+index e4ae604d4d0756edc9418634d9958338997c8203..e69a5c552d2f57bc373cb2b89690a7dd9c2faefc 100644
+--- a/net/minecraft/world/entity/monster/Stray.java
++++ b/net/minecraft/world/entity/monster/Stray.java
+@@ -53,6 +53,13 @@ public class Stray extends AbstractSkeleton {
+     }
+     // Purpur end - Toggle for water sensitive mob damage
+ 
++    // Purpur start - Mobs always drop experience
++    @Override
++    protected boolean isAlwaysExperienceDropper() {
++        return this.level().purpurConfig.strayAlwaysDropExp;
++    }
++    // Purpur end - Mobs always drop experience
++
+     public static boolean checkStraySpawnRules(
+         EntityType<Stray> entityType, ServerLevelAccessor level, EntitySpawnReason spawnReason, BlockPos pos, RandomSource random
+     ) {
+diff --git a/net/minecraft/world/entity/monster/Strider.java b/net/minecraft/world/entity/monster/Strider.java
+index 533801988cb4f8a916ef002a179990ca913b2f32..fe31c4a45afd61be8b74efe9d0858ccd0aced075 100644
+--- a/net/minecraft/world/entity/monster/Strider.java
++++ b/net/minecraft/world/entity/monster/Strider.java
+@@ -124,6 +124,13 @@ public class Strider extends Animal implements ItemSteerable {
+     }
+     // Purpur end - Make entity breeding times configurable
+ 
++    // Purpur start - Mobs always drop experience
++    @Override
++    protected boolean isAlwaysExperienceDropper() {
++        return this.level().purpurConfig.striderAlwaysDropExp;
++    }
++    // Purpur end - Mobs always drop experience
++
+     public static boolean checkStriderSpawnRules(
+         EntityType<Strider> entityType, LevelAccessor level, EntitySpawnReason spawnReason, BlockPos pos, RandomSource random
+     ) {
+diff --git a/net/minecraft/world/entity/monster/Vex.java b/net/minecraft/world/entity/monster/Vex.java
+index 30bd8a1b75376e6c74847ec338cc7f8988d6ca8a..ab320cf5a8c68fd239e81172a2f3909a67931105 100644
+--- a/net/minecraft/world/entity/monster/Vex.java
++++ b/net/minecraft/world/entity/monster/Vex.java
+@@ -119,6 +119,13 @@ public class Vex extends Monster implements TraceableEntity {
+     }
+     // Purpur end - Toggle for water sensitive mob damage
+ 
++    // Purpur start - Mobs always drop experience
++    @Override
++    protected boolean isAlwaysExperienceDropper() {
++        return this.level().purpurConfig.vexAlwaysDropExp;
++    }
++    // Purpur end - Mobs always drop experience
++
+     @Override
+     public boolean isFlapping() {
+         return this.tickCount % TICKS_PER_FLAP == 0;
+diff --git a/net/minecraft/world/entity/monster/Vindicator.java b/net/minecraft/world/entity/monster/Vindicator.java
+index 28fc1cd1e8721e2a87b5aa610d27afa8df3f4074..7f70b2387842f65da4632f1a27669a02d4e0402d 100644
+--- a/net/minecraft/world/entity/monster/Vindicator.java
++++ b/net/minecraft/world/entity/monster/Vindicator.java
+@@ -88,6 +88,13 @@ public class Vindicator extends AbstractIllager {
+     }
+     // Purpur end - Toggle for water sensitive mob damage
+ 
++    // Purpur start - Mobs always drop experience
++    @Override
++    protected boolean isAlwaysExperienceDropper() {
++        return this.level().purpurConfig.vindicatorAlwaysDropExp;
++    }
++    // Purpur end - Mobs always drop experience
++
+     @Override
+     protected void registerGoals() {
+         super.registerGoals();
+diff --git a/net/minecraft/world/entity/monster/Witch.java b/net/minecraft/world/entity/monster/Witch.java
+index e90ac2c977555793ee8c25f04ec3c33b0332d312..4b253ae8149f5d9505c5140a00a96d8c8850b1c4 100644
+--- a/net/minecraft/world/entity/monster/Witch.java
++++ b/net/minecraft/world/entity/monster/Witch.java
+@@ -88,6 +88,13 @@ public class Witch extends Raider implements RangedAttackMob {
+     }
+     // Purpur end - Toggle for water sensitive mob damage
+ 
++    // Purpur start - Mobs always drop experience
++    @Override
++    protected boolean isAlwaysExperienceDropper() {
++        return this.level().purpurConfig.witchAlwaysDropExp;
++    }
++    // Purpur end - Mobs always drop experience
++
+     @Override
+     protected void registerGoals() {
+         super.registerGoals();
+diff --git a/net/minecraft/world/entity/monster/WitherSkeleton.java b/net/minecraft/world/entity/monster/WitherSkeleton.java
+index ef2a7fdc8abe05b7718b71e23556258aba392c75..b3f5b2e3e2cfc378de948c0e186727d5687c0e98 100644
+--- a/net/minecraft/world/entity/monster/WitherSkeleton.java
++++ b/net/minecraft/world/entity/monster/WitherSkeleton.java
+@@ -66,6 +66,13 @@ public class WitherSkeleton extends AbstractSkeleton {
+     }
+     // Purpur end - Toggle for water sensitive mob damage
+ 
++    // Purpur start - Mobs always drop experience
++    @Override
++    protected boolean isAlwaysExperienceDropper() {
++        return this.level().purpurConfig.witherSkeletonAlwaysDropExp;
++    }
++    // Purpur end - Mobs always drop experience
++
+     @Override
+     protected void registerGoals() {
+         this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, AbstractPiglin.class, true));
+diff --git a/net/minecraft/world/entity/monster/Zoglin.java b/net/minecraft/world/entity/monster/Zoglin.java
+index ddc8de9a111395aa77025b809f176425be7bb30c..e37c6dcbe62cba2cb7f33ac1792d539f9b07aa24 100644
+--- a/net/minecraft/world/entity/monster/Zoglin.java
++++ b/net/minecraft/world/entity/monster/Zoglin.java
+@@ -119,6 +119,13 @@ public class Zoglin extends Monster implements HoglinBase {
+     }
+     // Purpur end - Toggle for water sensitive mob damage
+ 
++    // Purpur start - Mobs always drop experience
++    @Override
++    protected boolean isAlwaysExperienceDropper() {
++        return this.level().purpurConfig.zoglinAlwaysDropExp;
++    }
++    // Purpur end - Mobs always drop experience
++
+     @Override
+     protected Brain.Provider<Zoglin> brainProvider() {
+         return Brain.provider(MEMORY_TYPES, SENSOR_TYPES);
+diff --git a/net/minecraft/world/entity/monster/Zombie.java b/net/minecraft/world/entity/monster/Zombie.java
+index 147c030a2f8fd0d430070a36946fa42af177ea68..ab4dc7b3a7593d255dbd7d1df667fce3504af3ed 100644
+--- a/net/minecraft/world/entity/monster/Zombie.java
++++ b/net/minecraft/world/entity/monster/Zombie.java
+@@ -150,6 +150,13 @@ public class Zombie extends Monster {
+     }
+     // Purpur end - Toggle for water sensitive mob damage
+ 
++    // Purpur start - Mobs always drop experience
++    @Override
++    protected boolean isAlwaysExperienceDropper() {
++        return this.level().purpurConfig.zombieAlwaysDropExp;
++    }
++    // Purpur end - Mobs always drop experience
++
+     @Override
+     protected void registerGoals() {
+         this.goalSelector.addGoal(0, new org.purpurmc.purpur.entity.ai.HasRider(this)); // Purpur - Ridables
+diff --git a/net/minecraft/world/entity/monster/ZombieVillager.java b/net/minecraft/world/entity/monster/ZombieVillager.java
+index 606fe4bd9c3359e42a025a866873e147ee16a40e..e218e5d5f146ec996a6f5ce7e76b1d6506ac1cb9 100644
+--- a/net/minecraft/world/entity/monster/ZombieVillager.java
++++ b/net/minecraft/world/entity/monster/ZombieVillager.java
+@@ -129,6 +129,13 @@ public class ZombieVillager extends Zombie implements VillagerDataHolder {
+     }
+     // Purpur end - Toggle for water sensitive mob damage
+ 
++    // Purpur start - Mobs always drop experience
++    @Override
++    protected boolean isAlwaysExperienceDropper() {
++        return this.level().purpurConfig.zombieVillagerAlwaysDropExp;
++    }
++    // Purpur end - Mobs always drop experience
++
+     @Override
+     protected void defineSynchedData(SynchedEntityData.Builder builder) {
+         super.defineSynchedData(builder);
+diff --git a/net/minecraft/world/entity/monster/ZombifiedPiglin.java b/net/minecraft/world/entity/monster/ZombifiedPiglin.java
+index 7406f1f589509769aed260197f7cfabc081ce37b..f58c48d9de85fda3d13079f3e56b31af75b3c725 100644
+--- a/net/minecraft/world/entity/monster/ZombifiedPiglin.java
++++ b/net/minecraft/world/entity/monster/ZombifiedPiglin.java
+@@ -113,6 +113,13 @@ public class ZombifiedPiglin extends Zombie implements NeutralMob {
+     }
+     // Purpur end - Toggle for water sensitive mob damage
+ 
++    // Purpur start - Mobs always drop experience
++    @Override
++    protected boolean isAlwaysExperienceDropper() {
++        return this.level().purpurConfig.zombifiedPiglinAlwaysDropExp;
++    }
++    // Purpur end - Mobs always drop experience
++
+     @Override
+     public void setPersistentAngerTarget(@Nullable UUID target) {
+         this.persistentAngerTarget = target;
+diff --git a/net/minecraft/world/entity/monster/hoglin/Hoglin.java b/net/minecraft/world/entity/monster/hoglin/Hoglin.java
+index ddb7532d83b46dae22798937e097a8876fcd6106..994f6e5cb0960d43de00d9ef6d25e81107e0774a 100644
+--- a/net/minecraft/world/entity/monster/hoglin/Hoglin.java
++++ b/net/minecraft/world/entity/monster/hoglin/Hoglin.java
+@@ -135,6 +135,13 @@ public class Hoglin extends Animal implements Enemy, HoglinBase {
+     }
+     // Purpur end - Toggle for water sensitive mob damage
+ 
++    // Purpur start - Mobs always drop experience
++    @Override
++    protected boolean isAlwaysExperienceDropper() {
++        return this.level().purpurConfig.hoglinAlwaysDropExp;
++    }
++    // Purpur end - Mobs always drop experience
++
+     @VisibleForTesting
+     public void setTimeInOverworld(int timeInOverworld) {
+         this.timeInOverworld = timeInOverworld;
+diff --git a/net/minecraft/world/entity/monster/piglin/Piglin.java b/net/minecraft/world/entity/monster/piglin/Piglin.java
+index 76d572959b3422d1691e34fec3bbeb8d5b50d715..c48044ff1fd5b587935d11747d93598d0bc0c7a3 100644
+--- a/net/minecraft/world/entity/monster/piglin/Piglin.java
++++ b/net/minecraft/world/entity/monster/piglin/Piglin.java
+@@ -169,6 +169,13 @@ public class Piglin extends AbstractPiglin implements CrossbowAttackMob, Invento
+     }
+     // Purpur end - Toggle for water sensitive mob damage
+ 
++    // Purpur start - Mobs always drop experience
++    @Override
++    protected boolean isAlwaysExperienceDropper() {
++        return this.level().purpurConfig.piglinAlwaysDropExp;
++    }
++    // Purpur end - Mobs always drop experience
++
+     @Override
+     protected void addAdditionalSaveData(ValueOutput output) {
+         super.addAdditionalSaveData(output);
+diff --git a/net/minecraft/world/entity/monster/piglin/PiglinBrute.java b/net/minecraft/world/entity/monster/piglin/PiglinBrute.java
+index f4893cc54d7f144025da0057beedb3a974c80dc1..70ee15527fa6f30783d6a58bb767b18124f25c53 100644
+--- a/net/minecraft/world/entity/monster/piglin/PiglinBrute.java
++++ b/net/minecraft/world/entity/monster/piglin/PiglinBrute.java
+@@ -97,6 +97,13 @@ public class PiglinBrute extends AbstractPiglin {
+     }
+     // Purpur end - Toggle for water sensitive mob damage
+ 
++    // Purpur start - Mobs always drop experience
++    @Override
++    protected boolean isAlwaysExperienceDropper() {
++        return this.level().purpurConfig.piglinBruteAlwaysDropExp;
++    }
++    // Purpur end - Mobs always drop experience
++
+     public static AttributeSupplier.Builder createAttributes() {
+         return Monster.createMonsterAttributes()
+             .add(Attributes.MAX_HEALTH, 50.0)
+diff --git a/net/minecraft/world/entity/npc/Villager.java b/net/minecraft/world/entity/npc/Villager.java
+index 67732dbbad95791724901058615026a90ad05fc5..edef9b959200008dda8c5036319e29c5e2d92dae 100644
+--- a/net/minecraft/world/entity/npc/Villager.java
++++ b/net/minecraft/world/entity/npc/Villager.java
+@@ -288,6 +288,13 @@ public class Villager extends AbstractVillager implements ReputationEventHandler
+     }
+     // Purpur end - Toggle for water sensitive mob damage
+ 
++    // Purpur start - Mobs always drop experience
++    @Override
++    protected boolean isAlwaysExperienceDropper() {
++        return this.level().purpurConfig.villagerAlwaysDropExp;
++    }
++    // Purpur end - Mobs always drop experience
++
+     @Override
+     public Brain<Villager> getBrain() {
+         return (Brain<Villager>)super.getBrain();
+diff --git a/net/minecraft/world/entity/npc/WanderingTrader.java b/net/minecraft/world/entity/npc/WanderingTrader.java
+index f2b59a4490226168dd69ace94022cf6398d48615..dc6b30518270486cf3b2eaab4db13a507917f37d 100644
+--- a/net/minecraft/world/entity/npc/WanderingTrader.java
++++ b/net/minecraft/world/entity/npc/WanderingTrader.java
+@@ -105,6 +105,13 @@ public class WanderingTrader extends net.minecraft.world.entity.npc.AbstractVill
+     }
+     // Purpur end - Toggle for water sensitive mob damage
+ 
++    // Purpur start - Mobs always drop experience
++    @Override
++    protected boolean isAlwaysExperienceDropper() {
++        return this.level().purpurConfig.wanderingTraderAlwaysDropExp;
++    }
++    // Purpur end - Mobs always drop experience
++
+     @Override
+     protected void registerGoals() {
+         this.goalSelector.addGoal(0, new FloatGoal(this));

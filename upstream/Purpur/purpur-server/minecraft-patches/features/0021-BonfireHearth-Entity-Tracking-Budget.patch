@@ -1,0 +1,30 @@
+From 51792f87677d3a2e8ec88fbb8a2a222040e6ab31 Mon Sep 17 00:00:00 2001
+From: Bonfire Codex <bonfire-codex@local.dev>
+Date: Fri, 10 Apr 2026 16:28:46 +0800
+Subject: [PATCH] BonfireHearth entity tracking budget
+
+---
+ net/minecraft/server/level/ChunkMap.java | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
+
+diff --git a/net/minecraft/server/level/ChunkMap.java b/net/minecraft/server/level/ChunkMap.java
+index eb352aa..ba80bd8 100644
+--- a/net/minecraft/server/level/ChunkMap.java
++++ b/net/minecraft/server/level/ChunkMap.java
+@@ -1011,8 +1011,11 @@ public class ChunkMap extends ChunkStorage implements ChunkHolder.PlayerProvider
+                 continue;
+             }
+             ((ca.spottedleaf.moonrise.patches.entity_tracker.EntityTrackerTrackedEntity)tracker).moonrise$tick(((ca.spottedleaf.moonrise.patches.chunk_system.entity.ChunkSystemEntity)entity).moonrise$getChunkData().nearbyPlayers);
+-            if (((ca.spottedleaf.moonrise.patches.entity_tracker.EntityTrackerTrackedEntity)tracker).moonrise$hasPlayers()
+-                || ((ca.spottedleaf.moonrise.patches.chunk_system.entity.ChunkSystemEntity)entity).moonrise$getChunkStatus().isOrAfter(FullChunkStatus.ENTITY_TICKING)) {
++            if ((((ca.spottedleaf.moonrise.patches.entity_tracker.EntityTrackerTrackedEntity)tracker).moonrise$hasPlayers()
++                || ((ca.spottedleaf.moonrise.patches.chunk_system.entity.ChunkSystemEntity)entity).moonrise$getChunkStatus().isOrAfter(FullChunkStatus.ENTITY_TICKING))
++                && org.bonfiremc.hearth.tracking.BonfireEntityTrackingBudget.shouldSendChanges(
++                    this.level, entity, tracker.seenBy.size()
++                )) {
+                 tracker.serverEntity.sendChanges();
+             }
+         }
+-- 
+2.52.0.windows.1
+

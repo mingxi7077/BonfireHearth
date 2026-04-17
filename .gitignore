@@ -1,0 +1,28 @@
+# Root workspace files
+.idea/
+.vscode/
+*.iml
+Thumbs.db
+Desktop.ini
+
+# Local notes and scratch outputs
+notes/
+notes/*.tmp
+notes/*.log
+
+# Upstream build outputs
+upstream/Purpur/.gradle/
+upstream/Purpur/work/
+upstream/Purpur/.idea/
+upstream/Purpur/*/build/
+upstream/Purpur/test-plugin/build/
+upstream/Purpur/*.out
+upstream/Purpur/*-out.txt
+upstream/Purpur/*-info.txt
+**/.git-uploadbak/
+
+# Common archives and generated binaries
+*.jar
+*.zip
+*.tar
+*.gz
